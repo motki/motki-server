@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ character.Name }}{% endblock %}
+
+{% block content %}
+<h1>{{ character.Name }} <small class="hidden-xs">My Character</small><div class="btn-group pull-right"><a href="/account/my-characters" class="btn btn-default">Manage Characters</a></div></h1>
+<div class="row">
+    <div class="col-xs-3 pull-right">
+        <img class="img-rounded img-responsive" src="{{ portrait_url(character.CharacterID) }}" alt="{{ character.Name }}" title="{{ character.Name }}'s Portrait">
+    </div>
+    <div class="col-xs-9">
+        <dl>
+            <dt>Born</dt>
+            <dd>{{ character.BirthDate.Format('2006-01-02 15:04:05.999999999') }}</dd>
+            <dd>
+                <img src="{{ icon_src(character.Race.Icon) }}" style="height: 48px;" title="{{ character.Race.Name }}">
+                <img src="{{ icon_src(character.Bloodline.Icon) }}" style="height: 48px;" title="{{ character.Bloodline.Name }}">
+                <img class="hidden-xs" src="{{ icon_src(character.Ancestry.Icon) }}" style="height: 48px;" title="{{ character.Ancestry.Name }}">
+                <img src="{{ corp_logo_url(character.CorporationID) }}" style="width: 64px;" title="{{ character.Corp.Name }} [{{ character.Corp.Ticker }}]">
+                {% if character.AllianceID %}
+                    <img src="{{ alliance_logo_url(character.AllianceID) }}" style="width: 64px;" title="{{ character.Alliance.Name }} [{{ character.Alliance.Ticker }}]">
+                {% endif %}
+            </dd>
+            <dt>Bio</dt>
+            <dd>{{ character.Description }}</dd>
+        </dl>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Please verify your email{% endblock %}
+
+{% block content %}
+<h1>Registered</h1>
+
+<p class="lead">An email has been sent to {{ user.Email }} with an email verification link.</p>
+
+<p>Check your inbox for a message from system@motki.org and click on the link. Then, you can get started.</p>
+{% endblock %}

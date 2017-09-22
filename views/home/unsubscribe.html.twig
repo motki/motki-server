@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Unsubscribe{% endblock %}
+
+{% block content %}
+<h1>Unsubscribe</h1>
+<p class="lead">Don't want us to send you any more emails?</p>
+{% if error %}
+    <p class="text-danger">Woops, {{ error }}.</p>
+{% else %}
+    <p>Enter your email address and you won't ever hear from us again!</p>
+{% endif %}
+<div class="row">
+    <div class="col-sm-4">
+        <form class="form-horizontal" method="post" action="/unsubscribe">
+            <div class="form-group">
+                <label for="email" class="col-sm-3 control-label">Email</label>
+                <div class="col-sm-9">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Email address">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-default">Unsubscribe</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

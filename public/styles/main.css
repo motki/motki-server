@@ -1,0 +1,141 @@
+body {
+    padding-top: 70px;
+}
+
+dl dt {
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
+dl.dl-horizontal {
+    margin-top: 10px;
+}
+
+dl.dl-horizontal dd {
+    padding-top: 8px;
+}
+
+dl.dl-horizontal dd + dd {
+    padding-top: 2px;
+}
+
+.navbar .navbar-brand {
+    padding-top: 10px;
+}
+
+.navbar .navbar-brand > img {
+    display: inline-block;
+}
+
+footer {
+    margin-top: 100px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: .8em;
+    color: #7a8288;
+}
+
+.callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #111111;
+    border-left-width: 5px;
+    border-radius: 3px;
+    /* -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.3); */
+}
+
+.callout.callout-vertical {
+    border-left-width: 1px;
+    border-bottom-width: 5px;
+}
+
+.callout h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.callout p:last-child {
+    margin-bottom: 0;
+}
+
+.callout code {
+    border-radius: 3px;
+}
+
+.callout + .callout {
+    margin-top: -5px;
+}
+
+.callout-danger {
+    border-left-color: #AF1928;
+}
+
+.callout-variant1 {
+    border-bottom-color: #AF1928;
+}
+
+.callout-danger h4, .callout-variant1 h4 {
+    color: #AF1928;
+}
+
+.callout-warning {
+    border-left-color: #B78417;
+}
+
+.callout-variant2 {
+    border-bottom-color: #B78417;
+}
+
+.callout-warning h4, .callout-variant2 h4 {
+    color: #B78417;
+}
+
+.callout-info {
+    border-left-color: #006479;
+}
+
+.callout-variant3 {
+    border-bottom-color: #006479;
+}
+
+.callout-info h4, .callout-variant3 h4 {
+    color: #007F9C;
+}
+
+.callout-variant4 {
+    border-left-color: #7a8288;
+}
+
+.callout-variant4 h4 {
+    color: #7a8288;
+}
+
+.callout-borderless {
+    border: none;
+}
+
+.callout-borderless h4 {
+    color: #7a8288;
+}
+
+.callout p.lead {
+    font-size: 1.2em;
+}
+
+.select2-results__option {
+    color: #2b2e32;
+}
+
+.select2-selection__choice {
+    color: #2b2e32;
+}
+
+td .isk {
+    font-size: .9em;
+    float: left;
+    font-weight: 300;
+    margin-left: 10%;
+    padding-top: 2px;
+    color: #AAA;
+}

@@ -1,0 +1,16 @@
+<p>Hi {{ username }},</p>
+
+{% set encoded_email = email|url_encode %}
+<p>
+    Please verify your email address: <a href="{{ url('verify?email=' ~ encoded_email ~ '&hash=' ~ hash) }}">Click Here</a>.
+</p>
+
+<p>Plain-text link for copying and pasting: {{ url('verify?email=' ~ encoded_email ~ '&hash=' ~ hash) }}</p>
+
+<p style="font-size: 9pt;color:#555">
+    We've sent this email because a new user registered with your email address on our site, <a href="{{ url() }}">Moritake Industries</a>. If you did not register, please feel free to ignore this message.
+    <br>
+    You can also <a href="{{ url('unsubscribe?email=' ~ encoded_email) }}">explicitly unsubscribe from any future emails</a>.
+</p>
+
+<p style="line-height: 32px; font-size: 24px;font-weight: bold"><img src="https://imageserver.eveonline.com/Corporation/98513229_32.png" style="display: block;float:left;margin-right: 10px"> Moritake Industries</p>

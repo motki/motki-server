@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}403 Forbidden{% endblock %}
+
+{% block content %}
+<h1>403 <small>Forbidden</small></h1>
+<h3>Looks like you're not allowed to do that.</h3>
+<p>It's likely your currently selected character doesn't have the correct roles. This error may occur when your EVE character can't
+read corporation assets or industry jobs, for example.</p>
+<p>Visit <a href="/account/my-characters">Authorization Management</a> to view and change your designated characters.</p>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Authorization Management{% endblock %}
+
+{% block content %}
+<h1>{{ main.Name }} <small class="hidden-xs">Main Character</small></h1>
+<div class="row">
+    <div class="col-xs-2">
+        <img class="img-rounded img-responsive" src="{{ portrait_url(main.CharacterID) }}" alt="{{ main.Name }}" title="{{ main.Name }}'s Portrait">
+    </div>
+    <div class="col-xs-10">
+        <img src="{{ corp_logo_url(main.CorporationID) }}" style="width: 32px;" title="{{ main.Corp.Name }} [{{ main.Corp.Ticker }}]"> {{ main.Corp.Name }} [{{ main.Corp.Ticker }}]
+        {% if main.AllianceID %}
+            <small>
+            <img src="{{ alliance_logo_url(main.AllianceID) }}" style="width: 24px;" title="{{ main.Alliance.Name }} [{{ main.Alliance.Ticker }}]"> {{ main.Alliance.Name }} [{{ main.Alliance.Ticker }}]
+            </small>
+        {% endif %}
+        <dl class="dl-horizontal">
+            <dt>Required EVE API roles</dt>
+            <dd>Read Character, Read Skills, Read Skillqueue, Read Killmails</dd>
+            <dt></dt>
+            <dd>
+                <form action="/account/unlink-main" method="post">
+                    <input type="hidden" name="_token" value="{{ main_csrf }}">
+                    <button type="submit" class="btn btn-sm btn-default">Switch Characters</button>
+                </form>
+            </dd>
+        </dl>
+
+    </div>
+</div>
+    {% if logistics.Name %}
+<h1>{{ logistics.Name }} <small class="hidden-xs">Logistics Character</small></h1>
+<div class="row">
+    <div class="col-xs-2">
+        <img class="img-rounded img-responsive" src="{{ portrait_url(logistics.CharacterID) }}" alt="{{ logistics.Name }}" title="{{ logistics.Name }}'s Portrait">
+    </div>
+    <div class="col-xs-10">
+        <img src="{{ corp_logo_url(logistics.CorporationID) }}" style="width: 32px;" title="{{ logistics.Corp.Name }} [{{ logistics.Corp.Ticker }}]"> {{ logistics.Corp.Name }} [{{ logistics.Corp.Ticker }}]
+        {% if logistics.AllianceID %}
+            <small>
+            <img src="{{ alliance_logo_url(logistics.AllianceID) }}" style="width: 24px;" title="{{ logistics.Alliance.Name }} [{{ logistics.Alliance.Ticker }}]"> {{ logistics.Alliance.Name }} [{{ logistics.Alliance.Ticker }}]
+        </small>
+        {% endif %}
+        <dl class="dl-horizontal">
+            <dt>Required EVE API roles</dt>
+            <dd>Read Character Assets, Read Character Industry Jobs</dd>
+            <dd>Read Corp Assets, Read/Write Corp Structures, Read Corp Industry Jobs</dd>
+            <dt></dt>
+            <dd>
+                <form action="/account/unlink-logistics" method="post">
+                    <input type="hidden" name="_token" value="{{ logi_csrf }}">
+                    <button type="submit" class="btn btn-sm btn-default">Switch Characters</button>
+                </form>
+            </dd>
+        </dl>
+    </div>
+</div>
+    {% else %}
+<h1>No Character <small class="hidden-xs">Logistics Character</small></h1>
+<a href="/account/link-logistics" class="btn btn-sm btn-default">Link Character</a>
+    {% endif %}
+{% endblock %}

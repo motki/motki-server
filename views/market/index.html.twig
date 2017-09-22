@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Market{% endblock %}
+
+{% block additional_stylesheets %}
+    <link href="/styles/market.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h1>Market</h1>
+<div class="row">
+    <div class="col-sm-4">
+        <form method="post">
+            <div class="form-group">
+                <label for="items" class="col-sm-3 control-label">Items</label>
+                <div class="col-sm-9">
+                    <select style="height: 50px" multiple class="form-control" name="type_id" id="items">
+                        {% for bp in blueprints %}
+                        <option value="{{ bp.ID }}" selected>{{ bp.Name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="region" class="col-sm-3 control-label">Region</label>
+                <div class="col-sm-9">
+                    <select name="region" class="form-control" id="region">
+                        {% for region in regions %}
+                            <option{% if region.RegionID == regionID %} selected{% endif %} value="{{ region.RegionID }}">{{ region.Name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="runs" class="col-sm-3 control-label">Runs</label>
+                <div class="col-sm-9">
+                    <select name="runs" class="form-control" id="runs">
+                        {% for i in 1..100 %}
+                        <option{% if runs == i %} selected{% endif %} value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <button class="btn btn-default">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-8">
+        <div class="row">
+        {% for i, bp in blueprints %}
+            <div class="blueprint-container col-sm-6">
+                <h2>{{ bp.Name }} (ID: {{ bp.ID }})</h2>
+                <table data-blueprint="{{ bp.ID }}" class="blueprint-table">
+                    <tr>
+                        <td>Item</td>
+                        <td>Qty</td>
+                        <td>Item Cost</td>
+                    </tr>
+                    {% set totalCost = 0 %}
+                    {% for item in bp.Materials %}
+                        {% set cost = (prices[(item.ID)]*(item.Quantity))*runs %}
+                        {% set totalCost = totalCost + cost %}
+                        <tr class="material-row" data-typeid="{{ item.ID }}">
+                            <td>{{ item.Name }}</td>
+                            <td class="blueprint-value material-quantity">{{ (item.Quantity*runs)|format("%.0f") }}</td>
+                            <td class="blueprint-value material-cost">{{ cost|money }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% set revenue = prices[(bp.ID)]*runs %}
+                    {% set profitPct = 100-((totalCost/revenue)*100) %}
+                    {% if runs > 1 %}
+                    <tr class="blueprint-total">
+                        <td colspan="2">Cost per Unit <span style="font-size: .9em; color: #AAAAAA; font-weight: 300">x{{ runs }}</td>
+                        <td class="blueprint-value">{{ (totalCost/runs)|money }}</td>
+                    </tr>
+                        <tr class="blueprint-total">
+                            <td colspan="2">Rev. per Unit <span style="font-size: .9em; color: #AAAAAA; font-weight: 300">x{{ runs }}</td>
+                            <td class="blueprint-value">{{ (revenue/runs)|money }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr class="blueprint-total">
+                        <td colspan="2">Total Cost</td>
+                        <td class="blueprint-value">{{ totalCost|money }}</td>
+                    </tr>
+                    <tr class="blueprint-total">
+                        <td colspan="2">Expected Revenue</td>
+                        <td class="blueprint-value blueprint-revenue">{{ (revenue)|money }}</td>
+                    </tr>
+                    <tr class="blueprint-total blueprint-profit">
+                        <td>Expected Profit</td>
+                        <td class="blueprint-value{% if profitPct > 20 %} high-margin{% endif %}">{{ profitPct|format("%.2f") }}%</td>
+                        <td class="blueprint-value">{{ (revenue-totalCost)|money }}</td>
+                    </tr>
+                </table>
+            </div>
+            {% if i % 2 == 1 %}
+        </div>
+        <div class="row">
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_javascripts %}
+    <script type="text/javascript">
+        $(function() {
+            var csrf = '{{ lookup_csrf }}';
+            $('#items').select2({
+                ajax: {
+                    url: '/market/lookup',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(param) {
+                        return {query: param.term, _token: csrf}
+                    },
+                    processResults: function (data) {
+                        csrf = data.csrf;
+                        return {
+                            results: $.map(data.items, function(item) {
+                                return {id: item.ID, text: item.Name};
+                            })
+                        };
+                    }
+                }
+            });
+            $('#region').select2();
+            $('#runs').select2();
+        })
+    </script>
+{% endblock %}

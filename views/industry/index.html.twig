@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Industry{% endblock %}
+
+{% block content %}
+<h1>Industry <small>Corporation Jobs</small> <div class="btn-group pull-right"><a href="/industry/structures" class="btn btn-default">Structures</a><a href="/industry/blueprints" class="btn btn-default">Blueprints</a></div></h1>
+<div class="row">
+    <div class="col-sm-12">
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Activity</th>
+            <th>Type</th>
+            <th>Product</th>
+            <th>Runs</th>
+            <th>Completed</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ activities[(job.ActivityID)] }}</td>
+            <td>{{ job.BlueprintTypeName }}</td>
+            <td>{{ job.ProductTypeName }}</td>
+            {% if job.CompletedCharacterID != 0 %}
+            <td>{{ job.SuccessfulRuns }}/{{ job.Runs }}</td>
+            <td>{{ job.CompletedDate.Format('2006-01-02 15:04:05.999999999') }}</td>
+            {% elseif job.EndDate.Before(now) %}
+            <td>.../{{ job.Runs }}</td>
+            <td>Completion</td>
+            {% else %}
+            <td>.../{{ job.Runs }}</td>
+            <td>Running ({{ job.EndDate.Sub(now) }})</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}

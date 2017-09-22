@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blueprints{% endblock %}
+
+{% block content %}
+<h1>Industry <small>Corporation Blueprints</small> <div class="btn-group pull-right"><a href="/industry/" class="btn btn-default">Industry Jobs</a><a href="/industry/structures" class="btn btn-default">Structures</a></div></h1>
+<div class="row">
+    <div class="col-sm-12">
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>C/O</th>
+            <th>ME/TE</th>
+            <th>Runs</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for bp in bps %}
+        <tr>
+            <td>{{ bp.TypeName }}</td>
+            <td>{{ (bp.Quantity == -2) ? 'Copy' : 'Original' }}</td>
+            <td>{{ bp.MaterialEfficiency }}/{{ bp.TimeEfficiency }}</td>
+            <td>{{ (bp.Runs == -1) ? '∞' : bp.Runs }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}

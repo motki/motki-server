@@ -1,0 +1,65 @@
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background: #000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #262626;
+    opacity: 0.2;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: #2e2e2e;
+    opacity: 0.8;
+}
+
+.blueprint-container {
+    margin-bottom: 10px;
+}
+
+.blueprint-container > h2 {
+    margin-top: 0;
+    font-size: 1.2em;
+    font-weight: normal;
+    text-align: center;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #7a8288;
+}
+
+.blueprint-value {
+    text-align: right;
+}
+
+table tr.blueprint-total td {
+    background-color: #292D2F;
+}
+
+table tr.blueprint-profit td {
+    font-weight: bold;
+}
+
+table tr.blueprint-profit td.high-margin {
+    color: green;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+}
+
+table tr:first-child {
+    background-color: #232323;
+}
+
+table tr td {
+    padding: 4px;
+    border: 1px solid #7a8288;
+}
