@@ -59,7 +59,7 @@
   branch = "master"
   name = "github.com/motki/motki"
   packages = ["app","db","eveapi","evecentral","evedb","log","model","proto","proto/client","proto/server","worker"]
-  revision = "fe12ae33373626b89ccbacea94e48258f080e8c5"
+  revision = "768115d9a892b7df8d73e9c14697cb912444beec"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -136,6 +136,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1df0a10102205a346dfa64cb818b9d3822fe12ffd1878e24a102d2c8988c9eb0"
+  inputs-digest = "6f750142aad941f5e88aefeec28a48cd6ba8f6899996718cde007f4a9d35295c"
   solver-name = "gps-cdcl"
   solver-version = 1
