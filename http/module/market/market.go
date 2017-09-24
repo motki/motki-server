@@ -7,14 +7,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/motki/motki/evecentral"
-	"github.com/motki/motki/evedb"
-	"github.com/motki/motki/log"
-	"github.com/motki/motki/model"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
 	"github.com/motki/motki-server/http/template"
+	"github.com/motki/motki/evedb"
+	"github.com/motki/motki/log"
+	"github.com/motki/motki/proto/client"
 )
 
 const (
@@ -29,18 +28,16 @@ const (
 type marketModule struct {
 	auth      auth.Manager
 	templates template.Renderer
-	model     *model.Manager
-	edb       *evedb.EveDB
+	client    client.Client
 
 	logger log.Logger
 }
 
-func New(a auth.Manager, r template.Renderer, mdl *model.Manager, edb *evedb.EveDB, logger log.Logger) *marketModule {
+func New(a auth.Manager, r template.Renderer, cl client.Client, logger log.Logger) *marketModule {
 	return &marketModule{
 		auth:      a,
 		templates: r,
-		model:     mdl,
-		edb:       edb,
+		client:    cl,
 		logger:    logger,
 	}
 }
@@ -118,10 +115,14 @@ func (m *marketModule) indexAction(w http.ResponseWriter, req *route.Request) er
 	if regionID == 0 {
 		regionID = 10000002 // The Forge
 	}
-	bps, err := m.edb.GetBlueprints(ids...)
-	if err != nil {
-		m.templates.Error(http.StatusInternalServerError, req, w)
-		return err
+	var bps []*evedb.MaterialSheet
+	for _, id := range ids {
+		bp, err := m.client.GetMaterialSheet(id)
+		if err != nil {
+			m.templates.Error(http.StatusInternalServerError, req, w)
+			return err
+		}
+		bps = append(bps, bp)
 	}
 	mats := map[int]struct{}{}
 	for _, bp := range bps {
@@ -134,19 +135,16 @@ func (m *marketModule) indexAction(w http.ResponseWriter, req *route.Request) er
 		matIDs = append(matIDs, matID)
 	}
 	ids = append(ids, matIDs...)
-	stats, err := m.model.GetMarketStatRegion(regionID, ids[0], ids[1:]...)
+	stats, err := m.client.GetMarketPrices(ids[0], ids[1:]...)
 	if err != nil {
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
 	avgPrices := map[int]float64{}
 	for _, s := range stats {
-		if s.Kind != evecentral.StatSell {
-			continue
-		}
-		avgPrices[s.TypeID] = s.View().Avg
+		avgPrices[s.TypeID], _ = s.Avg.Float64()
 	}
-	regions, err := m.edb.GetAllRegions()
+	regions, err := m.client.GetRegions()
 	if err != nil {
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
@@ -191,7 +189,7 @@ func (m *marketModule) lookupAction(w http.ResponseWriter, req *route.Request) e
 	} else {
 		query = qp[0]
 	}
-	items, err := m.edb.QueryItemTypes(query, 6, 7, 8, 18)
+	items, err := m.client.QueryItemTypes(query, evedb.InterestingItemCategories...)
 	if err == nil {
 		payload.Items = items
 	}

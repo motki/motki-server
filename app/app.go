@@ -93,7 +93,7 @@ func NewWebEnv(conf *Config) (*WebEnv, error) {
 		modassets.New(),
 		modauth.New(sessions, authManager, templates, env.Model, env.Scheduler, mailer, env.Logger),
 		modhome.New(sessions, templates, mailer, env.Logger),
-		modmarket.New(authManager, templates, env.Model, env.EveDB, env.Logger),
+		modmarket.New(authManager, templates, env.Client, env.Logger),
 		modaccount.New(authManager, templates, env.Model, env.EveDB, env.Logger),
 		modindustry.New(authManager, templates, env.Model, env.EveDB, env.Logger))
 	if err != nil {
