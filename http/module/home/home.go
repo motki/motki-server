@@ -4,12 +4,12 @@ package home
 import (
 	"net/http"
 
-	"github.com/motki/motki/log"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
 	"github.com/motki/motki-server/http/session"
 	"github.com/motki/motki-server/http/template"
 	"github.com/motki/motki-server/mail"
+	"github.com/motki/motki/log"
 )
 
 const (
@@ -38,12 +38,8 @@ func New(s session.Manager, r template.Renderer, m *mail.Sender, l log.Logger) *
 func (m *homeModule) Init(mux *route.ServeMux) error {
 	mux.Handle("/", middleware.SessionizeFunc(m.sessions, m.indexAction))
 	mux.Handle("/about", middleware.SessionizeFunc(m.sessions, m.aboutAction))
+	mux.Handle("/recruitment", middleware.SessionizeFunc(m.sessions, m.recruitmentAction))
 	mux.Handle("/unsubscribe", middleware.SessionizeFunc(m.sessions, m.unsubscribeAction))
-	return nil
-}
-
-func (m *homeModule) aboutAction(w http.ResponseWriter, req *route.Request) error {
-	m.templates.Render("home/about.html.twig", req, w, nil)
 	return nil
 }
 
@@ -53,6 +49,16 @@ func (m *homeModule) indexAction(w http.ResponseWriter, req *route.Request) erro
 		return nil
 	}
 	m.templates.Render("home/index.html.twig", req, w, nil)
+	return nil
+}
+
+func (m *homeModule) aboutAction(w http.ResponseWriter, req *route.Request) error {
+	m.templates.Render("home/about.html.twig", req, w, nil)
+	return nil
+}
+
+func (m *homeModule) recruitmentAction(w http.ResponseWriter, req *route.Request) error {
+	m.templates.Render("home/recruitment.html.twig", req, w, nil)
 	return nil
 }
 

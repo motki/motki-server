@@ -50,6 +50,7 @@
             <ul class="nav navbar-nav">
                 <li{% if is_currently_on("/") %} class="active"{% endif %}><a href="/">Home</a></li>
                 <li{% if is_currently_on("/about") %} class="active"{% endif %}><a href="/about">About</a></li>
+                <li{% if is_currently_on("/recruitment") %} class="active"{% endif %}><a href="/recruitment">Join</a></li>
                 {% if is_logged_in() %}
                 <li{% if is_currently_on("/market") %} class="active"{% endif %}><a href="/market">Market</a></li>
                 <li{% if is_currently_on("/industry/") %} class="active"{% endif %}><a href="/industry/">Industry</a></li>
