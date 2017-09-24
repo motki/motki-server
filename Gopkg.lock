@@ -39,9 +39,9 @@
 
 [[projects]]
   name = "github.com/jackc/pgx"
-  packages = ["."]
-  revision = "9bd22f689ac9f0f5445fb5dad24569d5cadf1773"
-  version = "v2.11.0"
+  packages = [".","chunkreader","internal/sanitize","pgio","pgproto3","pgtype"]
+  revision = "66918e80dfde8d5cb09af9aebf40e2cce2eb0cc0"
+  version = "v3.0.1"
 
 [[projects]]
   name = "github.com/leekchan/accounting"
@@ -59,7 +59,7 @@
   branch = "master"
   name = "github.com/motki/motki"
   packages = ["app","db","eveapi","evecentral","evedb","log","model","proto","proto/client","proto/server","worker"]
-  revision = "768115d9a892b7df8d73e9c14697cb912444beec"
+  revision = "e29d1a376d911500113bb9b403299ce769504d4f"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -136,6 +136,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6f750142aad941f5e88aefeec28a48cd6ba8f6899996718cde007f4a9d35295c"
+  inputs-digest = "231fc9140ad230688ccbc6d51102ca4960a8172ed7ff4cea0997289d6d13169c"
   solver-name = "gps-cdcl"
   solver-version = 1
