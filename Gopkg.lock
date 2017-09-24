@@ -39,7 +39,7 @@
 
 [[projects]]
   name = "github.com/jackc/pgx"
-  packages = [".","stdlib"]
+  packages = ["."]
   revision = "9bd22f689ac9f0f5445fb5dad24569d5cadf1773"
   version = "v2.11.0"
 
@@ -59,7 +59,7 @@
   branch = "master"
   name = "github.com/motki/motki"
   packages = ["app","db","eveapi","evecentral","evedb","log","model","proto","proto/client","proto/server","worker"]
-  revision = "25693a5dec6daac3df3fb9d76df5e99707df7eb5"
+  revision = "fe12ae33373626b89ccbacea94e48258f080e8c5"
 
 [[projects]]
   name = "github.com/pkg/errors"

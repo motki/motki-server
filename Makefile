@@ -121,8 +121,9 @@ schemas        := evesde app
 schema_targets := $(foreach sch,$(schemas),schema_$(sch))
 
 # These define where working EVE Static Dump data can be downloaded.
-static_base_url  := https://github.com/motki/motki-server/raw/master/
-download_targets := resources/evesde-postgres.dmp.bz2 resources/Icons.zip resources/Types.zip
+motkid_src_base_url  := https://github.com/motki/motki-server/raw/master/
+download_targets     := resources/evesde-postgres.dmp.bz2 resources/Icons.zip resources/Types.zip
+motki_src_base_url   := https://github.com/motki/motki/raw/master/
 
 # Static asset targets. These must be zip files and follow a specific
 # convention. It may not be suitable for all assets.
@@ -139,7 +140,7 @@ define print_conf
 endef
 
 # All of the files this generates.
-files := $(PREFIX)motki_*_* $(PREFIX)motkid_*_* $(binary_targets) $(PREFIX)go_generated
+files := $(PREFIX)motki_*_* $(PREFIX)motkid_*_* $(binary_targets) $(PREFIX)go_generated $(PREFIX)motki
 
 .PHONY: all
 .PHONY: generate build release matrix
@@ -202,17 +203,20 @@ ifneq ($(shell $(call schema_exists,evesde)),1)
 endif
 
 # Installs the app schema if it does not already exist.
-schema_app:
+schema_app: $(PREFIX)motki
 ifneq ($(shell $(call schema_exists,app)),1)
-	$(CAT) $(wildcard ./resources/ddl/*.sql) | $(PSQL) $(pg_args)
+	$(CAT) $(wildcard ./build/motki/resources/ddl/*.sql) | $(PSQL) $(pg_args)
 endif
 
 # Downloads all necessary EVE Static Dump files.
-download: $(download_targets)
+download: $(download_targets) $(PREFIX)motki
 
 # This defines a target that matches any static files that need to be downloaded.
 $(download_targets):
-	cd resources && $(CURL) -L -O $(static_base_url)$@
+	cd resources && $(CURL) -L -O $(motkid_src_base_url)$@
+
+$(PREFIX)motki:
+	$(GIT) clone https://github.com/motki/motki $(PREFIX)motki
 
 # Installs all asset targets, downloading them if necessary.
 assets: download $(asset_targets)
@@ -228,7 +232,7 @@ clean: clean_files
 
 # Deletes all build files.
 clean_files:
-	@for f in $(files); do (rm -r "$$f" 2> /dev/null && echo "Deleted $$f"; exit 0); done
+	@for f in $(files); do (rm -rf "$$f" 2> /dev/null && echo "Deleted $$f"; exit 0); done
 	@echo "Cleaned files."
 
 # Deletes all schemas and removes installed assets.
