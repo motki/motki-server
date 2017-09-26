@@ -47,16 +47,36 @@ func (p Product) Cost() decimal.Decimal {
 	// product scale.
 	cost := decimal.NewFromFloat(0)
 	for _, m := range p.Materials {
-		// cost = cost + (m.Cost * round(m.Quantity / (1 + p.MaterialEfficiency) * p.BatchSize)
-		cost = cost.Add(m.Cost().
-			Mul(decimal.NewFromFloat(float64(m.Quantity)).
-				Div(p.MaterialEfficiency.Add(decimal.NewFromFloat(1))).
-				Mul(batchSize).
-				Round(0)))
+		// qtyAfterMEMulBatchSize = ceil(m.Quantity / (1 + p.MaterialEfficiency) * p.BatchSize)
+		qtyAfterMEMulBatchSize := decimal.NewFromFloat(float64(m.Quantity)).
+			Div(p.MaterialEfficiency.Add(decimal.NewFromFloat(1))).
+			Mul(batchSize).
+			Ceil()
+		// cost = cost + (m.Cost * qtyAfterMEMulBatchSize)
+		cost = cost.Add(m.Cost().Mul(qtyAfterMEMulBatchSize))
 	}
 	// Bring the final cost back to a single-product scale by dividing by the
 	// total component cost by the batch size at the end.
 	return cost.Div(batchSize)
+}
+
+// Clone copies the Product and all materials, omitting the ProductIDs.
+func (p Product) Clone() *Product {
+	mats := make([]*Product, len(p.Materials))
+	for k, m := range p.Materials {
+		mats[k] = m.Clone()
+	}
+	return &Product{
+		TypeID:             p.TypeID,
+		Materials:          mats,
+		Quantity:           p.Quantity,
+		MarketPrice:        p.MarketPrice,
+		MarketRegionID:     p.MarketRegionID,
+		MaterialEfficiency: p.MaterialEfficiency,
+		BatchSize:          p.BatchSize,
+		Kind:               p.Kind,
+		CorporationID:      p.CorporationID,
+	}
 }
 
 // NewProduct creates a new production chain for the given corporation and type.

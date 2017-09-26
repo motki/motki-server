@@ -59,7 +59,7 @@
   branch = "master"
   name = "github.com/motki/motki"
   packages = ["app","db","eveapi","evecentral","evedb","log","model","proto","proto/client","proto/server","worker"]
-  revision = "44e05a6e7bf2258c589387ed0d5379797a4510d8"
+  revision = "a5170bdc3d36e107d54cb46c9f6caa091d015815"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -83,13 +83,13 @@
   branch = "master"
   name = "github.com/tyler-sommer/stick"
   packages = [".","parse","twig/escape"]
-  revision = "d80fb7c90085f427c90fef7fb9df5fe63053a7c5"
+  revision = "05634229ddd17c5a0244788fbdb9995729bb42b0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert","bcrypt","blowfish","ssh/terminal"]
-  revision = "7d9177d70076375b9a59c8fde23d52d9c4a7ecd5"
+  revision = "847319b7fc94cab682988f93da778204da164588"
 
 [[projects]]
   branch = "master"
