@@ -1,26 +1,41 @@
+// Package app contains functionality related to creating an integrated
+// motki-server environment with all the necessary dependencies.
+//
+// The goal with this package is to provide a single, reusable base for
+// getting a motki application server up and running.
+//
+// This package imports every other motki-server package. As such, it cannot
+// be imported from the "library" portion of the project. It is intended to be
+// used from an external package (as is done in the motkid command).
+//
+// This package provides a web application server and can optionally serve
+// as a remote backend for client-only motki applications.
 package app
 
 import (
-	"os"
-
-	"github.com/pkg/errors"
-
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
+	"github.com/pkg/errors"
+
+	"github.com/motki/motki/app"
+
 	"github.com/motki/motki-server/http"
 	"github.com/motki/motki-server/http/auth"
+	_ "github.com/motki/motki-server/http/middleware"
+	_ "github.com/motki/motki-server/http/route"
+	"github.com/motki/motki-server/http/session"
+	"github.com/motki/motki-server/http/template"
+	"github.com/motki/motki-server/mail"
+
 	modaccount "github.com/motki/motki-server/http/module/account"
 	modassets "github.com/motki/motki-server/http/module/assets"
 	modauth "github.com/motki/motki-server/http/module/auth"
 	modhome "github.com/motki/motki-server/http/module/home"
 	modindustry "github.com/motki/motki-server/http/module/industry"
 	modmarket "github.com/motki/motki-server/http/module/market"
-	"github.com/motki/motki-server/http/session"
-	"github.com/motki/motki-server/http/template"
-	"github.com/motki/motki-server/mail"
-	"github.com/motki/motki/app"
 )
 
 // A WebEnv wraps a regular Env, providing web and mail servers.
@@ -36,6 +51,7 @@ type WebEnv struct {
 	signals chan os.Signal
 }
 
+// Config represents the configuration for a motki application server.
 type Config struct {
 	*app.Config
 
@@ -43,7 +59,7 @@ type Config struct {
 	Mail mail.Config `toml:"mail"`
 }
 
-// NewConfig loads a TOML configuration from the given path.
+// NewConfigFromTOMLFile loads a TOML configuration from the given path.
 func NewConfigFromTOMLFile(tomlPath string) (*Config, error) {
 	if !filepath.IsAbs(tomlPath) {
 		cwd, err := os.Getwd()
@@ -115,7 +131,7 @@ func NewWebEnv(conf *Config) (*WebEnv, error) {
 // This function performs the default shutdown procedure when it receives
 // an signals signal.
 //
-// See BlockUntilSignalWith for more details.
+// See BlockUntilSignalWith on Env for more details.
 func (webEnv *WebEnv) BlockUntilSignal(abort chan os.Signal) {
 	webEnv.signals = abort
 	shutdownFuncs := []app.ShutdownFunc{

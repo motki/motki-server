@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/motki/motki/log"
 	"github.com/motki/motki-server/app"
+	"github.com/motki/motki/log"
 )
 
 var confPath = flag.String("conf", "config.toml", "Path to configuration file.")
