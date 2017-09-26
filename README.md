@@ -1,12 +1,12 @@
-# motkid
+# motki-server
 
-The Moritake Industries EVE Corporation suite of applications.
+The Moritake Industries application server.
 
 [![GoDoc](https://godoc.org/github.com/motki/motki-server?status.svg)](https://godoc.org/github.com/motki/motki-server)
 
 ## Getting started
 
-This repository contains all the motkid source code, including dependency source code.
+This repository contains the web application source code, including dependency source code (stored in `vendor/`).
 
 #### Pre-requisites for building
 

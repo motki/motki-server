@@ -1,3 +1,4 @@
+// Command motkid starts a motki application server.
 package main
 
 import (
