@@ -5,7 +5,6 @@ package template
 import (
 	"bytes"
 	"io"
-	"path/filepath"
 
 	"github.com/tyler-sommer/stick"
 )
@@ -23,16 +22,14 @@ func (t *bindataTemplate) Contents() io.Reader {
 	return bytes.NewBuffer(t.contents)
 }
 
-func newTemplateLoader(config Config) stick.Loader {
-	return &assetLoader{viewsPath: config.ViewsPath}
+func newTemplateLoader(_ Config) stick.Loader {
+	return &assetLoader{}
 }
 
-type assetLoader struct {
-	viewsPath string
-}
+type assetLoader struct{}
 
 func (l *assetLoader) Load(name string) (stick.Template, error) {
-	res, err := Asset(filepath.Join(l.viewsPath, name))
+	res, err := Asset(name)
 	if err != nil {
 		return nil, err
 	}
