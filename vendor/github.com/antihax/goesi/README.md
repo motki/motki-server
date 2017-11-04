@@ -9,6 +9,7 @@ This module offers:
 * OAuth2 authentication to login.eveonline.com
 * Handle many tokens, with different scopes.
 * 100% ESI API coverage.
+* context.Context passthrough (for httptrace, logging, etc).
 * Some CREST and XMLAPI coverage (feel free to submit PR requests for other endpoints).
 
 ## Installation
@@ -20,18 +21,22 @@ This module offers:
 ```
   client, err := goesi.NewAPIClient(*http.Client, userAgent string)
 ```
-
 One client should be created that will serve as an agent for all requests. This allows http2 multiplexing and keep-alive be used to optimize connections.
 It is also good manners to provide a user-agent describing the point of use of the API, allowing CCP to contact you in case of emergencies.
 
 Example
 ```
   client, err := goesi.NewAPIClient(nil, "my esi client http://mysite.com contact <SomeDude> ingame")
-  result, response, err := client.V#.Endpoint.Operation(requiredParam, map[string]interface{} { 
+  result, response, err := client.V#.Endpoint.Operation(requestContext, requiredParam, map[string]interface{} { 
                                                                         "optionalParam1": "stringParam",
                                                                         "optionalParam2": 1234.56
                                                                     })
 ```
+
+## Etiquette 
+* Create a discriptive user agent so CCP can contact you (preferably on devfleet slack).
+* Obey Cache Timers.
+* Obey error rate limits: https://developers.eveonline.com/blog/article/error-limiting-imminent
 
 ## Obeying the Cache Times
 Caching is not implimented by the client and thus it is required to utilize
@@ -173,7 +178,6 @@ Generator is here: https://github.com/antihax/swagger-esi-goclient
 
 ## Author
   antihax on #devfleet slack
-
 
 ## Credits
 https://github.com/go-resty/resty (MIT license) Copyright Â© 2015-2016 Jeevanandam M (jeeva@myjeeva.com)

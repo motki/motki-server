@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 
 	"golang.org/x/net/context"
@@ -52,7 +53,18 @@ func NewSSOAuthenticator(client *http.Client, clientID string, clientSecret stri
 		Scopes:      scopes,
 		RedirectURL: redirectURL,
 	}
+
 	return c
+}
+
+// ChangeAuthURL changes the oauth2 configuration url for authentication
+func (c *SSOAuthenticator) ChangeAuthURL(url string) {
+	c.oauthConfig.Endpoint.AuthURL = url
+}
+
+// ChangeTokenURL changes the oauth2 configuration url for token
+func (c *SSOAuthenticator) ChangeTokenURL(url string) {
+	c.oauthConfig.Endpoint.TokenURL = url
 }
 
 // AuthorizeURL returns a url for an end user to authenticate with EVE SSO
@@ -62,27 +74,12 @@ func NewSSOAuthenticator(client *http.Client, clientID string, clientSecret stri
 func (c *SSOAuthenticator) AuthorizeURL(state string, onlineAccess bool, scopes []string) string {
 	var url string
 
-	// lock so we cannot use another requests scopes by racing.
-	c.scopeLock.Lock()
-
-	// Save the default scopes.
-	saveScopes := c.oauthConfig.Scopes
-	if scopes != nil {
-		c.oauthConfig.Scopes = scopes
-	}
-
 	// Generate the URL
 	if onlineAccess == true {
-		url = c.oauthConfig.AuthCodeURL(state, oauth2.AccessTypeOnline)
+		url = c.oauthConfig.AuthCodeURL(state, oauth2.AccessTypeOnline, oauth2.SetAuthURLParam("scope", strings.Join(scopes, " ")))
 	} else {
-		url = c.oauthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
+		url = c.oauthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline, oauth2.SetAuthURLParam("scope", strings.Join(scopes, " ")))
 	}
-
-	// Return the scopes
-	c.oauthConfig.Scopes = saveScopes
-
-	// Unlock mutex. [TODO] This is seriously hacky... need to fix
-	c.scopeLock.Unlock()
 
 	return url
 }
