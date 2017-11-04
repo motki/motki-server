@@ -46,7 +46,7 @@ func (p *EveAPIAuthorizer) BeginAuthorization(s *Session, r model.Role, w http.R
 	state := base64.RawURLEncoding.EncodeToString(b)
 	s.Set(eveAPIStateSessionKey, state)
 	s.Set(roleKey(state), int(r))
-	url := p.api.AuthorizeURL(state, scopesForRole(r)...)
+	url := p.api.AuthorizeURL(state, model.APIScopesForRole(r)...)
 	http.Redirect(w, req, url, http.StatusFound)
 }
 
@@ -171,35 +171,6 @@ func (p *EveAPIAuthorizer) getTokenSourceFromSession(s *Session, r model.Role) (
 		return nil, false
 	}
 	return source, true
-}
-
-func scopesForRole(r model.Role) []string {
-	switch r {
-	case model.RoleUser:
-		return []string{
-			eveapi.ScopePublicData,
-			eveapi.ScopeESISkillsReadSkills,
-			eveapi.ScopeESISkillsReadSkillQueue,
-			eveapi.ScopeESIKillmailsReadKillmails,
-		}
-	case model.RoleLogistics:
-		return []string{
-			eveapi.ScopeCharacterAssetsRead,
-			eveapi.ScopeCharacterIndustryJobsRead,
-			eveapi.ScopeCorporationAssetsRead,
-			eveapi.ScopeCorporationIndustryJobsRead,
-			eveapi.ScopeESIUniverseReadStructures,
-			eveapi.ScopeESIAssetsReadAssets,
-			eveapi.ScopeESIMarketsStructureMarkets,
-			eveapi.ScopeESICorporationsReadStructures,
-			eveapi.ScopeESICorporationsWriteStructures,
-			eveapi.ScopeESIIndustryReadCharacterJobs,
-			eveapi.ScopeESIMarketsReadCharacterOrders,
-			eveapi.ScopeESICharactersReadBlueprints,
-		}
-	default:
-		return []string{}
-	}
 }
 
 func roleKey(state string) string {

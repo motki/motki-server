@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ corp.Name }}{% endblock %}
+
+{% use '_motki_bg.html.twig' %}
+
+{% block background_url %}{{ corp_logo_url(corp.CorporationID, 128) }}{% endblock %}
+
+
+{% block content %}
+<h1>{{ corp.Name }} <small class="hidden-xs">Manage Corporation</small><div class="btn-group pull-right"><a href="/account/" class="btn btn-default">Back to Account</a></div></h1>
+{% if config.OptIn %}
+    <div class="row">
+        <div class="col-xs-12 embiggen">
+            <p class="lead">Your corporation is registered and active.</p>
+            <div class="row">
+                <div class="col-xs-6">
+                    <h3>What does that mean?</h3>
+                    <p>
+                        MOTKI will fetch orders, assets, blueprints, structure details, etc. on a regular basis. This
+                        information is used to provide accurate calculations and reporting of inventory.
+                    </p>
+                    <div class="callout callout-borderless">
+                        <h4>Diagnostics</h4>
+                        <dl class="dl-horizontal">
+                            <dt>Last API Fetch</dt>
+                            <dd>Unknown</dd>
+                            <dt>Opted in by</dt>
+                            <dd>{{ config.OptInBy }}</dd>
+                            <dt>Opted in at</dt>
+                            <dd>{{ config.OptInDate.Format("2006/01/02 15:04:05") }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="callout callout-warning">
+                        <h4>Looking for the eject button? No worries.</h4>
+                        <p>You can turn off MOTKI's data collection by opting out.</p>
+                        <p>
+                            <small>Once opted out, MOTKI will no longer access the EVE API on behalf of your corporation.</small>
+                        </p>
+                        <p>
+                            <small>Functionality related to confidential corporation data (assets, orders, etc) will no longer be available for your members.</small>
+                        </p>
+                        <p><a href="#" id="register" class="btn btn-warning">Opt Out</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<div class="modal fade" id="fine-print" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="/account/manage-corp/update">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="hidden" name="opt_in" value="0">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirm Opt Out</h4>
+                </div>
+                <div class="modal-body embiggen">
+                    <p class="lead">Opting out of MOTKI's services will disable all functionality related to retrieving confidential corporation data for your corporation.</p>
+                    <p class="lead">Are you sure you want to continue?</p>
+                    <p class="small">
+                        Note that you need to revoke access for your characters separately. This setting only affects corporation data, not character data.
+                    </p>
+                    <p>
+                        <a href="/privacy" target="_blank">Privacy Policy</a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Opt Out</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row embiggen">
+    <div class="col-xs-12">
+        <p class="lead">Your corporation is not registered.</p>
+        <p><a href="#" id="register" class="btn btn-lg btn-primary">Register and Opt In</a></p>
+        <h3>Why Register?</h3>
+        <p>By registering and opting in, you will enable several additional features to help your EVE corporation along.</p>
+        <ul>
+            <li>Inventory requirements sheet when creating Production Chains</li>
+            <li>More coming soon...</li>
+        </ul>
+        <h3>Why "Opt In"?</h3>
+        <p>By registering and opting in, you acknowledge and give permission to MOTKI to collect data from the EVE API on a regular basis. MOTKI will never share, sell, or transfer your API tokens, character, or corporation data, but be aware that the data is visible to site administrators.</p>
+        <p>View the complete rundown in our <a href="/privacy">Privacy Policy</a>.</p>
+        <h4>Other options</h4>
+        <p>If you are wary about sharing these data, consider running your own MOTKI server. Check out the <a href="https://github.com/motki/motki-server">GitHub repository to get started.</a></p>
+    </div>
+</div>
+<div class="modal fade" id="fine-print" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="/account/manage-corp/update">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="hidden" name="opt_in" value="1">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">The Fine Print</h4>
+                </div>
+                <div class="modal-body embiggen">
+                    <p class="lead">MOTKI does not share, sell, or transfer your API tokens, character data, or corporation data.</p>
+                    <p>
+                        By registering your corporation and opting-in, you acknowledge that you have given the MOTKI application ("MOTKI") full permission to use your API tokens to retrieve corporation data from the EVE API for various features and functionality.
+                    </p>
+                    <p>
+                        MOTKI will never share your tokens or any other data with any third party. We will never use your data for purposes other than providing you with the functionality available via either the MOTKI web application or the MOTKI CLI.
+                    </p>
+                    <p>
+                        For the full text, check our <a href="/privacy" target="_blank">Privacy Policy</a>.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Nevermind</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block additional_javascripts %}
+<script type="text/javascript">
+    $(function() {
+        $(document.getElementById('register')).on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(document.getElementById('fine-print')).modal('show');
+        })
+    })
+</script>
+{% endblock %}

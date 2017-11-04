@@ -2,10 +2,12 @@
 package industry
 
 import (
+	"fmt"
 	"net/http"
 	"sort"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
@@ -55,6 +57,7 @@ func (m *industryModule) Init(mux *route.ServeMux) error {
 	mux.Handle("/industry/", middleware.AuthorizeFunc(m.auth, model.RoleLogistics, m.indexAction))
 	mux.Handle("/industry/blueprints", middleware.AuthorizeFunc(m.auth, model.RoleLogistics, m.blueprintsAction))
 	mux.Handle("/industry/structures", middleware.AuthorizeFunc(m.auth, model.RoleLogistics, m.structuresAction))
+	mux.Handle("/industry/assets", middleware.AuthorizeFunc(m.auth, model.RoleLogistics, m.assetsAction))
 	return nil
 }
 
@@ -138,7 +141,8 @@ func (m *industryModule) blueprintsAction(w http.ResponseWriter, req *route.Requ
 }
 
 type helper struct {
-	edb *evedb.EveDB
+	edb   *evedb.EveDB
+	model *model.Manager
 }
 
 func (h *helper) GetSystem(id int64) string {
@@ -152,6 +156,23 @@ func (h *helper) GetSystem(id int64) string {
 func (h *helper) GetType(id int64) string {
 	s, err := h.edb.GetItemType(int(id))
 	if err != nil {
+		return ""
+	}
+	return s.Name
+}
+
+func (h *helper) GetTypeInt(id int) string {
+	s, err := h.edb.GetItemType(id)
+	if err != nil {
+		return ""
+	}
+	return s.Name
+}
+
+func (h *helper) GetAssetSystem(a *model.Asset) string {
+	s, err := h.model.GetAssetSystem(a)
+	if err != nil {
+		fmt.Println(err.Error())
 		return ""
 	}
 	return s.Name
@@ -186,10 +207,51 @@ func (m *industryModule) structuresAction(w http.ResponseWriter, req *route.Requ
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	h := &helper{m.edb}
+	h := &helper{m.edb, m.model}
 	m.templates.Render("industry/structures.html.twig", req, w, template.Params{
 		"structures": structs,
 		"helper":     h,
+	})
+	return nil
+}
+
+func (m *industryModule) assetsAction(w http.ResponseWriter, req *route.Request) error {
+	s, ok := req.Auth()
+	if !ok {
+		m.logger.Warnf("woops, could not get current authenticated session")
+		m.templates.Error(http.StatusInternalServerError, req, w)
+		return nil
+	}
+	c, err := m.model.GetCharacter(s.User().CharacterID)
+	if err != nil {
+		m.logger.Warnf("woops, failed to get char info: %s", err.Error())
+		m.templates.Error(http.StatusInternalServerError, req, w)
+		return err
+	}
+	apiCtx, ok := req.AuthorizedContext()
+	if !ok {
+		m.logger.Warnf("woops, failed to get corp jobs: %s", err.Error())
+		m.templates.Error(http.StatusInternalServerError, req, w)
+		return nil
+	}
+	assets, err := m.model.GetCorporationAssets(apiCtx, c.CorporationID)
+	if err != nil {
+		if err.Error() == "403 Forbidden" {
+			m.templates.Error(http.StatusForbidden, req, w)
+			return nil
+		}
+		m.logger.Warnf("woops, failed to get structures: %s", err.Error())
+		m.templates.Error(http.StatusInternalServerError, req, w)
+		return err
+	}
+	spew.Dump(m.model.FetchCorporationDetail(apiCtx))
+	spew.Dump(m.model.GetCorporationOrders(apiCtx, c.CorporationID))
+	spew.Dump(m.model.GetCorporationOrder(apiCtx, c.CorporationID, 4976116595))
+	return nil
+	h := &helper{m.edb, m.model}
+	m.templates.Render("industry/assets.html.twig", req, w, template.Params{
+		"assets": assets,
+		"helper": h,
 	})
 	return nil
 }

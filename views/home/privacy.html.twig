@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Privacy{% endblock %}
+
+{% use '_motki_bg.html.twig' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="row embiggen">
+            <div class="col-xs-12">
+                <h1>Privacy Policy</h1>
+                <p class="lead">MOTKI does not share, sell, or transfer your API tokens, character data, or corporation data.</p>
+                <p>
+                    By creating a user account and linking your EVE characters and/or corporations, you acknowledge that you have given the MOTKI application ("MOTKI") full permission to use your API tokens to retrieve data from the EVE API as necessary for various functionality provided by MOTKI.
+                </p>
+                <p>
+                    MOTKI will never share your tokens or any other data with any third party. We will never use your data for purposes other than providing you with the functionality available via either the MOTKI web application or the MOTKI CLI, or for contacting you in the event of a breach.
+                </p>
+                <p>
+                    We promise to do our best to protect your information from unauthorized access by following industry best practices such as secure password hashing, SSL certificates, and firewall configuration. In the event of a data breach, MOTKI administrators will use the email addresses on file to notify its users of the matter.
+                </p>
+                <h3>Acceptable use</h3>
+                <p>
+                    MOTKI will use your API token to fetch data about your character and/or corporation from the EVE API. The application may do this automatically or upon user demand, depending on the feature, until the user revokes or removes the API token.
+                </p>
+                <p>
+                    MOTKI administrators will never use data stored on the platform for in-game intelligence. However, your data may be seen by administrators to diagnose bugs, test new features, and more generally during maintenance and administration tasks like backing up the database.
+                </p>
+                <p>
+                    MOTKI may use your account's email address to communicate user-enabled notifications, reports, and updates. MOTKI will never share your email address with a third party for use in advertising or otherwise. You can unsubscribe from all future email by visiting the <a href="/unsubscribe">Unsubscribe page</a>.
+                </p>
+                <h3>Cookies</h3>
+                <p>
+                    MOTKI uses browser cookies to track user sessions. By visiting the site, you agree to allow MOTKI to place a cookie in your browser for the sole purpose of providing a stateful (logged-in) session. Cookies are necessary to allow functionality provided by the MOTKI web application.
+                </p>
+                <p>
+                    MOTKI does not use cookies to track users beyond the sole purpose of maintaining an active, logged-in session on the MOTKI web application.
+                </p>
+                <h3>Opting Out</h3>
+                <p>
+                    A registered user may opt out of all data collection by unlinking their EVE accounts from the <a href="/account/my-characters">My Characters page</a> or <a href="https://community.eveonline.com/support/third-party-applications/">revoking the token from the EVE portal</a>. Once you have removed an API token, MOTKI will remove it from its online database. Historic copies of the token may still exist in database backups, but MOTKI will no longer access the EVE API using the revoked API token. Please keep in mind that unlinking your accounts will disable all functionality related to that character.
+                </p>
+
+                <p class="callout callout-info">
+                    The MOTKI software platform is developed completely openly, with all portions of the software source code <a href="https://github.com/motki">hosted on GitHub</a>. MOTKI uses <a href="https://github.com/motki/motki/blob/master/LICENSE">the permissive MIT license</a> across the board, so please feel free to customize and adapt the software for your needs.
+                </p>
+                <h3>
+                    Quick links
+                </h3>
+                <ul>
+                    <li><a href="https://community.eveonline.com/support/third-party-applications/">Official EVE Community Third Party Applications</a></li>
+                    <li><a href="/account/my-characters">Manage linked characters on MOTKI</a></li>
+                    <li><a href="/unsubscribe">Unsubscribe from all email from MOTKI</a></li>
+                    <li><a href="https://github.com/motki">MOTKI GitHub page</a></li>
+                    <li><a href="https://github.com/motki/motki/blob/master/LICENSE">MOTKI License</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

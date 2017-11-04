@@ -2,19 +2,45 @@
 
 {% block title %}Recruitment{% endblock %}
 
-{% block content %}
+{% use '_motki_bg.html.twig' %}
 
+{% block content %}
 <div class="row" style="margin-top: -20px; background-image: url('/images/astra.jpg'); background-position: center; text-shadow: -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, 1px 1px 1px #000; min-height: 250px; margin-bottom: 20px">
     <div class="col-md-8">
         <h1 style="text-shadow: -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, 1px 1px 1px #000">Recruitment <small>Join today!</small></h1>
         <p class="lead">Moritake Industries is looking for new members of all trades.</p>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-10">
+<div class="row embiggen">
+    <div class="col-xs-12">
         <p>MOTKI is a PVP and industry oriented corporation with an active presence across Domain and The Bleak Lands.</p>
         <p>We are a laid-back group of internet spaceship pilots looking to create a bit of interesting content. With several pilot-oriented programs such as skillbook and ship reimbursement and ore buyback, we are the perfect place to call home.</p>
-        <p style="font-size: 1.1em;">Contact <strong>Belatrex Dastrike</strong> in-game or join the <strong>motki-pub</strong> channel.</p>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="callout callout-info">
+                    <h4>Benefits</h4>
+                    <ul class="flat">
+                        <li>Beautiful Living in The Bleak Lands</li>
+                        <li>Unaligned Faction Warfare PVP</li>
+                        <li>Lucrative industry opportunities</li>
+                        <li>Ship replacement program</li>
+                        <li>Skillbook, implant, and newbro programs</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="callout callout-warning">
+                    <h4>Requirements</h4>
+                    <ul class="flat">
+                        <li>1 million+ SP</li>
+                        <li>Good attitude</li>
+                        <li>Looking to have fun</li>
+                        <li>Don't treat EVE as a job</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <p style="font-size: 1.3em;">Contact <strong>Belatrex Dastrike</strong> in-game or join the <strong>motki-pub</strong> channel.</p>
     </div>
 </div>
 {% endblock %}

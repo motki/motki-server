@@ -2,6 +2,10 @@
 
 {% block title %}{{ character.Name }}{% endblock %}
 
+{% use '_motki_bg.html.twig' %}
+
+{% block background_url %}{{ corp_logo_url(character.CorporationID, 128) }}{% endblock %}
+
 {% block content %}
 <h1>{{ character.Name }} <small class="hidden-xs">My Character</small><div class="btn-group pull-right"><a href="/account/my-characters" class="btn btn-default">Manage Characters</a></div></h1>
 <div class="row">

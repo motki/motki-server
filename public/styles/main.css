@@ -1,6 +1,5 @@
 body {
     padding-top: 70px;
-    font-size: 1.7em !important;
 }
 
 dl dt {
@@ -139,4 +138,25 @@ td .isk {
     margin-left: 10%;
     padding-top: 2px;
     color: #AAA;
+}
+
+.embiggen p, .embiggen li {
+    font-size: 1.2em;
+}
+
+.embiggen p.lead {
+    font-size: 1.5em;
+}
+
+.embiggen h4 {
+    font-size: 1.5em;
+}
+
+ul.flat {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul.flat li {
+    margin-left: 0;
 }

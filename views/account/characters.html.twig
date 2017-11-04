@@ -2,6 +2,10 @@
 
 {% block title %}Authorization Management{% endblock %}
 
+{% use '_motki_bg.html.twig' %}
+
+{% block background_url %}{{ corp_logo_url(main.CorporationID, 128) }}{% endblock %}
+
 {% block content %}
 <h1>{{ main.Name }} <small class="hidden-xs">Main Character</small></h1>
 <div class="row">
@@ -59,5 +63,39 @@
     {% else %}
 <h1>No Character <small class="hidden-xs">Logistics Character</small></h1>
 <a href="/account/link-logistics" class="btn btn-sm btn-default">Link Character</a>
+    {% endif %}
+    {% if director.Name %}
+<h1>{{ director.Name }} <small class="hidden-xs">Director Character</small></h1>
+<div class="row">
+    <div class="col-xs-2">
+        <img class="img-rounded img-responsive" src="{{ portrait_url(director.CharacterID) }}" alt="{{ director.Name }}" title="{{ director.Name }}'s Portrait">
+    </div>
+    <div class="col-xs-10">
+        <img src="{{ corp_logo_url(director.CorporationID) }}" style="width: 32px;" title="{{ director.Corp.Name }} [{{ director.Corp.Ticker }}]"> {{ director.Corp.Name }} [{{ director.Corp.Ticker }}]
+        {% if director.AllianceID %}
+            <small>
+                <img src="{{ alliance_logo_url(director.AllianceID) }}" style="width: 24px;" title="{{ director.Alliance.Name }} [{{ director.Alliance.Ticker }}]"> {{ director.Alliance.Name }} [{{ director.Alliance.Ticker }}]
+            </small>
+        {% endif %}
+        <dl class="dl-horizontal">
+            <dt>Required EVE API roles</dt>
+            <dd>Read Character Assets, Read Character Industry Jobs</dd>
+            <dd>Read Corp Hangars, Read Corp Assets, Read Corp Industry Jobs</dd>
+            <dt></dt>
+            <dd>
+                <form action="/account/unlink-director" method="post">
+                    <input type="hidden" name="_token" value="{{ director_csrf }}">
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-sm btn-default">Switch Characters</button>
+                        <a class="btn btn-sm btn-primary" href="/account/manage-corp">Manage Corporation</a>
+                    </div>
+                </form>
+            </dd>
+        </dl>
+    </div>
+</div>
+    {% else %}
+<h1>No Character <small class="hidden-xs">Director Character</small></h1>
+<a href="/account/link-director" class="btn btn-sm btn-default">Link Character</a>
     {% endif %}
 {% endblock %}

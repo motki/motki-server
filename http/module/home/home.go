@@ -40,6 +40,7 @@ func (m *homeModule) Init(mux *route.ServeMux) error {
 	mux.Handle("/about", middleware.SessionizeFunc(m.sessions, m.aboutAction))
 	mux.Handle("/recruitment", middleware.SessionizeFunc(m.sessions, m.recruitmentAction))
 	mux.Handle("/unsubscribe", middleware.SessionizeFunc(m.sessions, m.unsubscribeAction))
+	mux.Handle("/privacy", middleware.SessionizeFunc(m.sessions, m.privacyAction))
 	return nil
 }
 
@@ -95,5 +96,10 @@ func (m *homeModule) unsubscribeAction(w http.ResponseWriter, req *route.Request
 		"email":      req.FormValue("email"),
 		"csrf_token": sess.NewCSRF(sessionKeyUnsubCSRFToken),
 	})
+	return nil
+}
+
+func (m *homeModule) privacyAction(w http.ResponseWriter, req *route.Request) error {
+	m.templates.Render("home/privacy.html.twig", req, w, nil)
 	return nil
 }
