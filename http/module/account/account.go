@@ -317,9 +317,12 @@ func (m *accountModule) editCorpAction(w http.ResponseWriter, r *route.Request) 
 		return err
 	}
 	config, err := m.model.GetCorporationConfig(auth.CorporationID)
-	if err != nil && err != model.ErrCorpNotRegistered {
-		m.templates.Error(http.StatusInternalServerError, r, w)
-		return err
+	if err != nil {
+		if err != model.ErrCorpNotRegistered {
+			m.templates.Error(http.StatusInternalServerError, r, w)
+			return err
+		}
+		config = &model.CorporationConfig{}
 	}
 	csrfToken := s.NewCSRF(sessionKeyUpdateCorpCSRF)
 	m.templates.Render("account/edit_corp.html.twig", r, w, template.Params{

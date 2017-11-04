@@ -646,31 +646,31 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"_motki_bg.html.twig": _motki_bgHtmlTwig,
-	"account/characters.html.twig": accountCharactersHtmlTwig,
-	"account/edit_corp.html.twig": accountEdit_corpHtmlTwig,
-	"account/index.html.twig": accountIndexHtmlTwig,
-	"auth/login.html.twig": authLoginHtmlTwig,
-	"auth/registered.html.twig": authRegisteredHtmlTwig,
-	"auth/verified.html.twig": authVerifiedHtmlTwig,
-	"base.html.twig": baseHtmlTwig,
-	"error/400.html.twig": error400HtmlTwig,
-	"error/403.html.twig": error403HtmlTwig,
-	"error/404.html.twig": error404HtmlTwig,
-	"error/405.html.twig": error405HtmlTwig,
-	"error/500.html.twig": error500HtmlTwig,
-	"home/about.html.twig": homeAboutHtmlTwig,
-	"home/index.html.twig": homeIndexHtmlTwig,
-	"home/privacy.html.twig": homePrivacyHtmlTwig,
-	"home/recruitment.html.twig": homeRecruitmentHtmlTwig,
-	"home/unsubscribe.html.twig": homeUnsubscribeHtmlTwig,
-	"home/unsubscribed.html.twig": homeUnsubscribedHtmlTwig,
-	"industry/assets.html.twig": industryAssetsHtmlTwig,
+	"_motki_bg.html.twig":           _motki_bgHtmlTwig,
+	"account/characters.html.twig":  accountCharactersHtmlTwig,
+	"account/edit_corp.html.twig":   accountEdit_corpHtmlTwig,
+	"account/index.html.twig":       accountIndexHtmlTwig,
+	"auth/login.html.twig":          authLoginHtmlTwig,
+	"auth/registered.html.twig":     authRegisteredHtmlTwig,
+	"auth/verified.html.twig":       authVerifiedHtmlTwig,
+	"base.html.twig":                baseHtmlTwig,
+	"error/400.html.twig":           error400HtmlTwig,
+	"error/403.html.twig":           error403HtmlTwig,
+	"error/404.html.twig":           error404HtmlTwig,
+	"error/405.html.twig":           error405HtmlTwig,
+	"error/500.html.twig":           error500HtmlTwig,
+	"home/about.html.twig":          homeAboutHtmlTwig,
+	"home/index.html.twig":          homeIndexHtmlTwig,
+	"home/privacy.html.twig":        homePrivacyHtmlTwig,
+	"home/recruitment.html.twig":    homeRecruitmentHtmlTwig,
+	"home/unsubscribe.html.twig":    homeUnsubscribeHtmlTwig,
+	"home/unsubscribed.html.twig":   homeUnsubscribedHtmlTwig,
+	"industry/assets.html.twig":     industryAssetsHtmlTwig,
 	"industry/blueprints.html.twig": industryBlueprintsHtmlTwig,
-	"industry/index.html.twig": industryIndexHtmlTwig,
+	"industry/index.html.twig":      industryIndexHtmlTwig,
 	"industry/structures.html.twig": industryStructuresHtmlTwig,
-	"mail/verify_email.html.twig": mailVerify_emailHtmlTwig,
-	"market/index.html.twig": marketIndexHtmlTwig,
+	"mail/verify_email.html.twig":   mailVerify_emailHtmlTwig,
+	"market/index.html.twig":        marketIndexHtmlTwig,
 }
 
 // AssetDir returns the file names below a certain
@@ -712,17 +712,18 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"_motki_bg.html.twig": &bintree{_motki_bgHtmlTwig, map[string]*bintree{}},
 	"account": &bintree{nil, map[string]*bintree{
 		"characters.html.twig": &bintree{accountCharactersHtmlTwig, map[string]*bintree{}},
-		"edit_corp.html.twig": &bintree{accountEdit_corpHtmlTwig, map[string]*bintree{}},
-		"index.html.twig": &bintree{accountIndexHtmlTwig, map[string]*bintree{}},
+		"edit_corp.html.twig":  &bintree{accountEdit_corpHtmlTwig, map[string]*bintree{}},
+		"index.html.twig":      &bintree{accountIndexHtmlTwig, map[string]*bintree{}},
 	}},
 	"auth": &bintree{nil, map[string]*bintree{
-		"login.html.twig": &bintree{authLoginHtmlTwig, map[string]*bintree{}},
+		"login.html.twig":      &bintree{authLoginHtmlTwig, map[string]*bintree{}},
 		"registered.html.twig": &bintree{authRegisteredHtmlTwig, map[string]*bintree{}},
-		"verified.html.twig": &bintree{authVerifiedHtmlTwig, map[string]*bintree{}},
+		"verified.html.twig":   &bintree{authVerifiedHtmlTwig, map[string]*bintree{}},
 	}},
 	"base.html.twig": &bintree{baseHtmlTwig, map[string]*bintree{}},
 	"error": &bintree{nil, map[string]*bintree{
@@ -733,17 +734,17 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		"500.html.twig": &bintree{error500HtmlTwig, map[string]*bintree{}},
 	}},
 	"home": &bintree{nil, map[string]*bintree{
-		"about.html.twig": &bintree{homeAboutHtmlTwig, map[string]*bintree{}},
-		"index.html.twig": &bintree{homeIndexHtmlTwig, map[string]*bintree{}},
-		"privacy.html.twig": &bintree{homePrivacyHtmlTwig, map[string]*bintree{}},
-		"recruitment.html.twig": &bintree{homeRecruitmentHtmlTwig, map[string]*bintree{}},
-		"unsubscribe.html.twig": &bintree{homeUnsubscribeHtmlTwig, map[string]*bintree{}},
+		"about.html.twig":        &bintree{homeAboutHtmlTwig, map[string]*bintree{}},
+		"index.html.twig":        &bintree{homeIndexHtmlTwig, map[string]*bintree{}},
+		"privacy.html.twig":      &bintree{homePrivacyHtmlTwig, map[string]*bintree{}},
+		"recruitment.html.twig":  &bintree{homeRecruitmentHtmlTwig, map[string]*bintree{}},
+		"unsubscribe.html.twig":  &bintree{homeUnsubscribeHtmlTwig, map[string]*bintree{}},
 		"unsubscribed.html.twig": &bintree{homeUnsubscribedHtmlTwig, map[string]*bintree{}},
 	}},
 	"industry": &bintree{nil, map[string]*bintree{
-		"assets.html.twig": &bintree{industryAssetsHtmlTwig, map[string]*bintree{}},
+		"assets.html.twig":     &bintree{industryAssetsHtmlTwig, map[string]*bintree{}},
 		"blueprints.html.twig": &bintree{industryBlueprintsHtmlTwig, map[string]*bintree{}},
-		"index.html.twig": &bintree{industryIndexHtmlTwig, map[string]*bintree{}},
+		"index.html.twig":      &bintree{industryIndexHtmlTwig, map[string]*bintree{}},
 		"structures.html.twig": &bintree{industryStructuresHtmlTwig, map[string]*bintree{}},
 	}},
 	"mail": &bintree{nil, map[string]*bintree{
@@ -800,4 +801,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

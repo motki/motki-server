@@ -25,7 +25,7 @@ type bindataFS struct {
 }
 
 func (fs bindataFS) Open(name string) (http.File, error) {
-	b, err := Asset(filepath.Join(fs.prefix, name))
+	b, err := Asset(strings.TrimPrefix(name, "/"))
 	if err == nil {
 		return newFile(name, b), nil
 	}
