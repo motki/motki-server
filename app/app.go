@@ -20,8 +20,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/pkg/errors"
 
-	"github.com/motki/motki/app"
-
 	"github.com/motki/motki-server/http"
 	"github.com/motki/motki-server/http/auth"
 	_ "github.com/motki/motki-server/http/middleware"
@@ -29,6 +27,7 @@ import (
 	"github.com/motki/motki-server/http/session"
 	"github.com/motki/motki-server/http/template"
 	"github.com/motki/motki-server/mail"
+	"github.com/motki/motki/app"
 
 	modaccount "github.com/motki/motki-server/http/module/account"
 	modassets "github.com/motki/motki-server/http/module/assets"
@@ -110,7 +109,7 @@ func NewWebEnv(conf *Config) (*WebEnv, error) {
 		modauth.New(sessions, authManager, templates, env.Model, env.Scheduler, mailer, env.Logger),
 		modhome.New(sessions, templates, mailer, env.Logger),
 		modmarket.New(authManager, templates, env.Client, env.Logger),
-		modaccount.New(authManager, templates, env.Model, env.EveDB, env.Logger),
+		modaccount.New(authManager, templates, env.Model, env.EveDB, env.Scheduler, env.Logger),
 		modindustry.New(authManager, templates, env.Model, env.EveDB, env.Logger))
 	if err != nil {
 		return nil, errors.Wrap(err, "app: unable to initialize web environment")

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/motki/motki-server/app"
 	"github.com/motki/motki/log"
@@ -17,7 +18,7 @@ var Version = "dev"
 
 // fatalf creates a default logger, writes the given message, and exits.
 func fatalf(format string, vals ...interface{}) {
-	logger := log.New(log.Config{})
+	logger := log.New(log.Config{Level: "error"})
 	logger.Fatalf(format, vals...)
 }
 
@@ -34,6 +35,15 @@ func main() {
 	env, err := app.NewWebEnv(conf)
 	if err != nil {
 		fatalf("motkid: unable to initialize application environment: %s", err.Error())
+	}
+
+	err = env.Scheduler.ScheduleAt(
+		env.Scheduler.RepeatFuncEvery(
+			env.Model.UpdateCorporationDataFunc(env.Logger),
+			1*time.Hour),
+		time.Now().Add(10*time.Second))
+	if err != nil {
+		env.Logger.Warnf("motkid: unable to schedule corporation data update worker: %s", err.Error())
 	}
 
 	go func() {

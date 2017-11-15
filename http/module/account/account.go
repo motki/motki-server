@@ -1,7 +1,6 @@
 package account
 
 import (
-	"errors"
 	"net/http"
 
 	"time"
@@ -13,6 +12,7 @@ import (
 	"github.com/motki/motki/evedb"
 	"github.com/motki/motki/log"
 	"github.com/motki/motki/model"
+	"github.com/motki/motki/worker"
 )
 
 const (
@@ -38,16 +38,18 @@ type accountModule struct {
 	templates template.Renderer
 	model     *model.Manager
 	evedb     *evedb.EveDB
+	work      *worker.Scheduler
 
 	logger log.Logger
 }
 
-func New(a auth.Manager, r template.Renderer, m *model.Manager, edb *evedb.EveDB, logger log.Logger) *accountModule {
+func New(a auth.Manager, r template.Renderer, m *model.Manager, edb *evedb.EveDB, work *worker.Scheduler, logger log.Logger) *accountModule {
 	return &accountModule{
 		auth:      a,
 		templates: r,
 		model:     m,
 		evedb:     edb,
+		work:      work,
 
 		logger: logger,
 	}
@@ -383,16 +385,12 @@ func (m *accountModule) updateCorpAction(w http.ResponseWriter, r *route.Request
 		m.templates.Error(http.StatusInternalServerError, r, w)
 		return err
 	}
-	ctx, ok := r.AuthorizedContext()
-	if !ok {
-		m.templates.Error(http.StatusInternalServerError, r, w)
-		return errors.New("unable to get authorized context from request")
-	}
-	_, err = m.model.FetchCorporationDetail(ctx)
+	_, err = m.model.FetchCorporationDetail(a.Context())
 	if err != nil {
 		m.templates.Error(http.StatusInternalServerError, r, w)
 		return err
 	}
+
 	http.Redirect(w, r.Request, "/account/manage-corp", http.StatusFound)
 	return nil
 }

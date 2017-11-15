@@ -7,7 +7,7 @@
   version = "0.3.0"
 
 [[constraint]]
-  branch = "master"
+  revision = "e1935318320ea13974c7c65bf36bd5941bb208bc"
   name = "github.com/antihax/goesi"
 
 [[constraint]]

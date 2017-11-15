@@ -2,12 +2,12 @@
 package industry
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"sort"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
@@ -68,29 +68,34 @@ func (m *industryModule) indexAction(w http.ResponseWriter, req *route.Request) 
 	}
 	s, ok := req.Auth()
 	if !ok {
-		m.logger.Warnf("woops, could not get current authenticated session from  context")
 		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+		return errors.New("could not get current authenticated session")
 	}
 	c, err := m.model.GetCharacter(s.User().CharacterID)
 	if err != nil {
-		m.logger.Warnf("woops, could not get char info: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	apiCtx, ok := req.AuthorizedContext()
-	if !ok {
-		m.logger.Warnf("woops, could not get authorized context")
-		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+	conf, err := m.model.GetCorporationConfig(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
 	}
-	jobs, err := m.model.GetCorporationIndustryJobs(apiCtx, c.CorporationID)
+	if !conf.OptIn {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return errors.New("corp is not opted in to data collection")
+	}
+	a, err := m.model.GetCorporationAuthorization(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
+	}
+	jobs, err := m.model.GetCorporationIndustryJobs(a.Context(), c.CorporationID)
 	if err != nil {
 		if err.Error() == "403 Forbidden" {
 			m.templates.Error(http.StatusForbidden, req, w)
-			return nil
+			return errors.New("received forbidden response from eve API")
 		}
-		m.logger.Warnf("woops, failed to get corp jobs: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
@@ -110,29 +115,34 @@ func (m *industryModule) indexAction(w http.ResponseWriter, req *route.Request) 
 func (m *industryModule) blueprintsAction(w http.ResponseWriter, req *route.Request) error {
 	s, ok := req.Auth()
 	if !ok {
-		m.logger.Warnf("woops, could not get current authenticated session")
 		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+		return errors.New("could not get current authenticated session")
 	}
 	c, err := m.model.GetCharacter(s.User().CharacterID)
 	if err != nil {
-		m.logger.Warnf("woops, failed to get char info: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	apiCtx, ok := req.AuthorizedContext()
-	if !ok {
-		m.logger.Warnf("woops, failed to get api context: %s", err.Error())
-		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+	conf, err := m.model.GetCorporationConfig(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
 	}
-	bps, err := m.model.GetCorporationBlueprints(apiCtx, c.CorporationID)
+	if !conf.OptIn {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return errors.New("corp is not opted in to data collection")
+	}
+	a, err := m.model.GetCorporationAuthorization(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
+	}
+	bps, err := m.model.GetCorporationBlueprints(a.Context(), c.CorporationID)
 	if err != nil {
 		if err.Error() == "403 Forbidden" {
 			m.templates.Error(http.StatusForbidden, req, w)
-			return nil
+			return errors.New("received forbidden response from eve API")
 		}
-		m.logger.Warnf("woops, failed to get corp blueprints: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
@@ -181,29 +191,34 @@ func (h *helper) GetAssetSystem(a *model.Asset) string {
 func (m *industryModule) structuresAction(w http.ResponseWriter, req *route.Request) error {
 	s, ok := req.Auth()
 	if !ok {
-		m.logger.Warnf("woops, could not get current authenticated session")
 		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+		return errors.New("could not get current authenticated session")
 	}
 	c, err := m.model.GetCharacter(s.User().CharacterID)
 	if err != nil {
-		m.logger.Warnf("woops, failed to get char info: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	apiCtx, ok := req.AuthorizedContext()
-	if !ok {
-		m.logger.Warnf("woops, failed to get corp jobs: %s", err.Error())
-		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+	conf, err := m.model.GetCorporationConfig(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
 	}
-	structs, err := m.model.GetCorporationStructures(apiCtx, c.CorporationID)
+	if !conf.OptIn {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return errors.New("corp is not opted in to data collection")
+	}
+	a, err := m.model.GetCorporationAuthorization(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
+	}
+	structs, err := m.model.GetCorporationStructures(a.Context(), c.CorporationID)
 	if err != nil {
 		if err.Error() == "403 Forbidden" {
 			m.templates.Error(http.StatusForbidden, req, w)
-			return nil
+			return errors.New("received forbidden response from eve API")
 		}
-		m.logger.Warnf("woops, failed to get structures: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
@@ -218,36 +233,37 @@ func (m *industryModule) structuresAction(w http.ResponseWriter, req *route.Requ
 func (m *industryModule) assetsAction(w http.ResponseWriter, req *route.Request) error {
 	s, ok := req.Auth()
 	if !ok {
-		m.logger.Warnf("woops, could not get current authenticated session")
 		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+		return errors.New("could not get current authenticated session")
 	}
 	c, err := m.model.GetCharacter(s.User().CharacterID)
 	if err != nil {
-		m.logger.Warnf("woops, failed to get char info: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	apiCtx, ok := req.AuthorizedContext()
-	if !ok {
-		m.logger.Warnf("woops, failed to get corp jobs: %s", err.Error())
-		m.templates.Error(http.StatusInternalServerError, req, w)
-		return nil
+	conf, err := m.model.GetCorporationConfig(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
 	}
-	assets, err := m.model.GetCorporationAssets(apiCtx, c.CorporationID)
+	if !conf.OptIn {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return errors.New("corp is not opted in to data collection")
+	}
+	a, err := m.model.GetCorporationAuthorization(c.CorporationID)
+	if err != nil {
+		m.templates.Error(http.StatusForbidden, req, w)
+		return err
+	}
+	assets, err := m.model.GetCorporationAssets(a.Context(), c.CorporationID)
 	if err != nil {
 		if err.Error() == "403 Forbidden" {
 			m.templates.Error(http.StatusForbidden, req, w)
-			return nil
+			return errors.New("received forbidden response from eve API")
 		}
-		m.logger.Warnf("woops, failed to get structures: %s", err.Error())
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	spew.Dump(m.model.FetchCorporationDetail(apiCtx))
-	spew.Dump(m.model.GetCorporationOrders(apiCtx, c.CorporationID))
-	spew.Dump(m.model.GetCorporationOrder(apiCtx, c.CorporationID, 4976116595))
-	return nil
 	h := &helper{m.edb, m.model}
 	m.templates.Render("industry/assets.html.twig", req, w, template.Params{
 		"assets": assets,
