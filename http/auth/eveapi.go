@@ -142,13 +142,13 @@ func (p *EveAPIAuthorizer) AuthorizedContext(s *Session, r model.Role) (context.
 	return context.WithValue(context.Background(), goesi.ContextOAuth2, source), nil
 }
 
-func (p *EveAPIAuthorizer) getTokenSourceFromDB(s *Session, r model.Role) (goesi.CRESTTokenSource, bool) {
+func (p *EveAPIAuthorizer) getTokenSourceFromDB(s *Session, r model.Role) (oauth2.TokenSource, bool) {
 	a, err := p.model.GetAuthorization(s.user, r)
 	if err != nil {
 		p.logger.Debugf("unable to get authorization information from database: %s", err.Error())
 		return nil, false
 	}
-	source, err := p.api.TokenSource((*goesi.CRESTToken)(a.Token))
+	source, err := p.api.TokenSource(a.Token)
 	if err != nil {
 		p.logger.Warnf("unable to get valid TokenSource from database-loaded authorization: %s", err.Error())
 		return nil, false
@@ -156,12 +156,12 @@ func (p *EveAPIAuthorizer) getTokenSourceFromDB(s *Session, r model.Role) (goesi
 	return source, true
 }
 
-func (p *EveAPIAuthorizer) getTokenSourceFromSession(s *Session, r model.Role) (goesi.CRESTTokenSource, bool) {
+func (p *EveAPIAuthorizer) getTokenSourceFromSession(s *Session, r model.Role) (oauth2.TokenSource, bool) {
 	v, ok := s.Bytes(tokenKey(r))
 	if !ok {
 		return nil, false
 	}
-	tok := &goesi.CRESTToken{}
+	tok := &oauth2.Token{}
 	if err := json.Unmarshal(v, &tok); err != nil {
 		return nil, false
 	}
