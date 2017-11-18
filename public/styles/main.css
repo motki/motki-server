@@ -19,6 +19,21 @@ dl.dl-horizontal dd + dd {
     padding-top: 2px;
 }
 
+body > .navbar {
+    background-image: none;
+    filter: none;
+}
+
+div.btn, button.btn, a.btn, div.btn:hover, button.btn:hover, a.btn:hover {
+    background-image: none;
+    filter: none;
+    border-radius: 0;
+}
+
+div.modal-content {
+    border-radius: 0;
+}
+
 .navbar .navbar-brand {
     padding-top: 10px;
 }
@@ -36,13 +51,10 @@ footer {
 }
 
 .callout {
-    padding: 20px;
     margin: 20px 0;
-    border: 1px solid #111111;
-    border-left-width: 5px;
-    border-radius: 3px;
-    /* -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.3);
-    box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.3); */
+    padding: 10px;
+    border: none;
+    font-size: 1.2em;
 }
 
 .callout.callout-vertical {
@@ -79,6 +91,15 @@ footer {
     color: #AF1928;
 }
 
+.callout-danger h4::after {
+    content: "";
+    width: 90%;
+    display: block;
+    margin-top: -1px;
+    height: 1px;
+    border-bottom: 1px solid #AF1928;
+}
+
 .callout-warning {
     border-left-color: #B78417;
 }
@@ -91,8 +112,21 @@ footer {
     color: #B78417;
 }
 
+.callout-warning h4::after {
+    content: "";
+    width: 90%;
+    display: block;
+    margin-top: -1px;
+    height: 1px;
+    border-bottom: 1px solid #B78417;
+}
+
+.info {
+    color: #007F9C;
+}
+
 .callout-info {
-    border-left-color: #006479;
+    border: none;
 }
 
 .callout-variant3 {
@@ -101,6 +135,15 @@ footer {
 
 .callout-info h4, .callout-variant3 h4 {
     color: #007F9C;
+}
+
+.callout-info h4::after {
+    content: "";
+    width: 90%;
+    display: block;
+    margin-top: -1px;
+    height: 1px;
+    border-bottom: 1px solid #006479;
 }
 
 .callout-variant4 {
@@ -113,6 +156,9 @@ footer {
 
 .callout-borderless {
     border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 
 .callout-borderless h4 {
@@ -153,8 +199,8 @@ td .isk {
 }
 
 ul.flat {
-    list-style-type: none;
-    padding-left: 0;
+    list-style-type: square;
+    padding-left: 20px;
 }
 
 ul.flat li {

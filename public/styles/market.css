@@ -1,25 +1,3 @@
-/* Let's get this party started */
-::-webkit-scrollbar {
-    width: 9px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    background: #000;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #262626;
-    opacity: 0.2;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
-::-webkit-scrollbar-thumb:window-inactive {
-    background: #2e2e2e;
-    opacity: 0.8;
-}
-
 .blueprint-container {
     margin-bottom: 10px;
 }

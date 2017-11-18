@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/motki/motki/log"
 	"github.com/motki/motki-server/http/route"
 	"github.com/motki/motki-server/http/session"
 	"github.com/motki/motki-server/http/template"
+	"github.com/motki/motki/log"
 	"golang.org/x/crypto/acme/autocert"
 )
 

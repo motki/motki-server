@@ -5,15 +5,22 @@
         body > .container::after {
             content: "";
             opacity: 0.05;
-            top: -5%;
-            left: 10%;
+            top: 0;
+            margin: -50px auto;
+            transform: translateX(-100px);
             width: 512px;
             height: 512px;
-            position: fixed;
+            position: absolute;
             z-index: -1;
             background-image: url('{{ block('background_url') }}');
             background-repeat: no-repeat;
             background-size: cover;
+        }
+
+        @media (max-width: 500px) {
+            body > .container::after {
+                opacity: 0;
+            }
         }
     </style>
 {% endblock %}
