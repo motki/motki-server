@@ -34,6 +34,14 @@ div.modal-content {
     border-radius: 0;
 }
 
+.nav.navbar-nav li a {
+    text-transform: uppercase;
+}
+
+.navbar ul.navbar-nav>li>a:hover {
+    background: #0e0e0e none;
+}
+
 .navbar .navbar-brand {
     padding-top: 10px;
 }
@@ -121,10 +129,6 @@ footer {
     border-bottom: 1px solid #B78417;
 }
 
-.info {
-    color: #007F9C;
-}
-
 .callout-info {
     border: none;
 }
@@ -205,4 +209,64 @@ ul.flat {
 
 ul.flat li {
     margin-left: 0;
+}
+
+
+.visible-phone {
+    display: none !important;
+}
+
+.visible-tablet {
+    display: none !important;
+}
+
+.hidden-desktop {
+    display: none !important;
+}
+
+.visible-desktop {
+    display: inherit !important;
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .hidden-desktop {
+        display: inherit !important;
+    }
+    .visible-desktop {
+        display: none !important ;
+    }
+    .visible-tablet {
+        display: inherit !important;
+    }
+    .hidden-tablet {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .hidden-desktop {
+        display: inherit !important;
+    }
+    .visible-desktop {
+        display: none !important;
+    }
+    .visible-phone {
+        display: inherit !important;
+    }
+    .hidden-phone {
+        display: none !important;
+    }
+}
+
+.visible-print {
+    display: none !important;
+}
+
+@media print {
+    .visible-print {
+        display: inherit !important;
+    }
+    .hidden-print {
+        display: none !important;
+    }
 }

@@ -38,6 +38,8 @@ func New(s session.Manager, r template.Renderer, m *mail.Sender, l log.Logger) *
 func (m *homeModule) Init(mux *route.ServeMux) error {
 	mux.Handle("/", middleware.SessionizeFunc(m.sessions, m.indexAction))
 	mux.Handle("/about", middleware.SessionizeFunc(m.sessions, m.aboutAction))
+	mux.Handle("/press", middleware.SessionizeFunc(m.sessions, m.pressAction))
+	mux.Handle("/press/yc119/h1", middleware.SessionizeFunc(m.sessions, m.press2Action))
 	mux.Handle("/recruitment", middleware.SessionizeFunc(m.sessions, m.recruitmentAction))
 	mux.Handle("/unsubscribe", middleware.SessionizeFunc(m.sessions, m.unsubscribeAction))
 	mux.Handle("/privacy", middleware.SessionizeFunc(m.sessions, m.privacyAction))
@@ -55,6 +57,16 @@ func (m *homeModule) indexAction(w http.ResponseWriter, req *route.Request) erro
 
 func (m *homeModule) aboutAction(w http.ResponseWriter, req *route.Request) error {
 	m.templates.Render("home/about.html.twig", req, w, nil)
+	return nil
+}
+
+func (m *homeModule) pressAction(w http.ResponseWriter, req *route.Request) error {
+	m.templates.Render("home/press.html.twig", req, w, nil)
+	return nil
+}
+
+func (m *homeModule) press2Action(w http.ResponseWriter, req *route.Request) error {
+	m.templates.Render("home/press2.html.twig", req, w, nil)
 	return nil
 }
 

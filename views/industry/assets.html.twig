@@ -2,6 +2,10 @@
 
 {% block title %}Assets{% endblock %}
 
+{% use '_motki_bg.html.twig' %}
+
+{% block background_url %}{{ corp_logo_url(corp.CorporationID, 128) }}{% endblock %}
+
 {% block content %}
 <h1>Industry <small>Corporation Structures</small> <div class="btn-group pull-right"><a href="/industry/" class="btn btn-default">Industry Jobs</a><a href="/industry/blueprints" class="btn btn-default">Blueprints</a></div></h1>
 <div class="row">

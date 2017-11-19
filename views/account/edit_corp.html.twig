@@ -6,7 +6,6 @@
 
 {% block background_url %}{{ corp_logo_url(corp.CorporationID, 128) }}{% endblock %}
 
-
 {% block content %}
 <h1>{{ corp.Name }} <small class="hidden-xs">Manage Corporation</small><div class="btn-group pull-right"><a href="/account/" class="btn btn-default">Back to Account</a></div></h1>
 {% if config.OptIn %}
