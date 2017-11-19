@@ -3,10 +3,11 @@ package industry
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"sort"
 	"time"
+
+	"strconv"
 
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/middleware"
@@ -100,6 +101,25 @@ func (m *industryModule) indexAction(w http.ResponseWriter, req *route.Request) 
 		return err
 	}
 	sort.Sort(jobSlice(jobs))
+	offset := 0
+	total := len(jobs)
+	const limit = 50
+	if page := req.FormValue("page"); page != "" {
+		if i, err := strconv.Atoi(page); err == nil {
+			if i >= 0 {
+				offset = (i - 1) * limit
+			}
+		}
+	}
+	if offset > len(jobs) {
+		jobs = nil
+	} else {
+		offplus := offset + limit
+		if offplus > len(jobs) {
+			offplus = len(jobs)
+		}
+		jobs = jobs[offset:offplus]
+	}
 	act := map[int]string{
 		1: "Manufacturing",
 		3: "Researching TE",
@@ -108,7 +128,7 @@ func (m *industryModule) indexAction(w http.ResponseWriter, req *route.Request) 
 		8: "Invention",
 		7: "Reverse Engineering",
 	}
-	m.templates.Render("industry/index.html.twig", req, w, template.Params{"jobs": jobs, "activities": act, "now": time.Now()})
+	m.templates.Render("industry/index.html.twig", req, w, template.Params{"jobs": jobs, "activities": act, "now": time.Now(), "corp_id": c.CorporationID, "page": offset/limit + 1, "total": total})
 	return nil
 }
 
@@ -146,13 +166,38 @@ func (m *industryModule) blueprintsAction(w http.ResponseWriter, req *route.Requ
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	m.templates.Render("industry/blueprints.html.twig", req, w, template.Params{"bps": bps})
+	offset := 0
+	total := len(bps)
+	const limit = 50
+	if page := req.FormValue("page"); page != "" {
+		if i, err := strconv.Atoi(page); err == nil {
+			if i >= 0 {
+				offset = (i - 1) * limit
+			}
+		}
+	}
+	if offset > len(bps) {
+		bps = nil
+	} else {
+		offplus := offset + limit
+		if offplus > len(bps) {
+			offplus = len(bps)
+		}
+		bps = bps[offset:offplus]
+	}
+	m.templates.Render("industry/blueprints.html.twig", req, w, template.Params{
+		"bps":     bps,
+		"corp_id": c.CorporationID,
+		"page":    offset/limit + 1,
+		"total":   total,
+	})
 	return nil
 }
 
 type helper struct {
 	edb   *evedb.EveDB
 	model *model.Manager
+	cache map[int]string
 }
 
 func (h *helper) GetSystem(id int64) string {
@@ -180,11 +225,14 @@ func (h *helper) GetTypeInt(id int) string {
 }
 
 func (h *helper) GetAssetSystem(a *model.Asset) string {
+	if v, ok := h.cache[a.LocationID]; ok {
+		return v
+	}
 	s, err := h.model.GetAssetSystem(a)
 	if err != nil {
-		fmt.Println(err.Error())
 		return ""
 	}
+	h.cache[a.LocationID] = s.Name
 	return s.Name
 }
 
@@ -222,10 +270,32 @@ func (m *industryModule) structuresAction(w http.ResponseWriter, req *route.Requ
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	h := &helper{m.edb, m.model}
+	h := &helper{m.edb, m.model, map[int]string{}}
+	offset := 0
+	total := len(structs)
+	const limit = 50
+	if page := req.FormValue("page"); page != "" {
+		if i, err := strconv.Atoi(page); err == nil {
+			if i >= 0 {
+				offset = (i - 1) * limit
+			}
+		}
+	}
+	if offset > len(structs) {
+		structs = nil
+	} else {
+		offplus := offset + limit
+		if offplus > len(structs) {
+			offplus = len(structs)
+		}
+		structs = structs[offset:offplus]
+	}
 	m.templates.Render("industry/structures.html.twig", req, w, template.Params{
 		"structures": structs,
 		"helper":     h,
+		"corp_id":    c.CorporationID,
+		"page":       offset/limit + 1,
+		"total":      total,
 	})
 	return nil
 }
@@ -264,10 +334,32 @@ func (m *industryModule) assetsAction(w http.ResponseWriter, req *route.Request)
 		m.templates.Error(http.StatusInternalServerError, req, w)
 		return err
 	}
-	h := &helper{m.edb, m.model}
+	h := &helper{m.edb, m.model, map[int]string{}}
+	offset := 0
+	total := len(assets)
+	const limit = 50
+	if page := req.FormValue("page"); page != "" {
+		if i, err := strconv.Atoi(page); err == nil {
+			if i >= 0 {
+				offset = (i - 1) * limit
+			}
+		}
+	}
+	if offset > len(assets) {
+		assets = nil
+	} else {
+		offplus := offset + limit
+		if offplus > len(assets) {
+			offplus = len(assets)
+		}
+		assets = assets[offset:offplus]
+	}
 	m.templates.Render("industry/assets.html.twig", req, w, template.Params{
-		"assets": assets,
-		"helper": h,
+		"assets":  assets,
+		"helper":  h,
+		"corp_id": c.CorporationID,
+		"page":    offset/limit + 1,
+		"total":   total,
 	})
 	return nil
 }
