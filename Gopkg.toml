@@ -20,7 +20,7 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/motki/motki"
+  name = "github.com/motki/core"
 
 [[constraint]]
   name = "github.com/pkg/errors"
