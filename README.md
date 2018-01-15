@@ -121,7 +121,7 @@ Once you have created your application on the developer portal, put the Client I
 
 You need to generate a certificate and private key to properly set up SSL. During development, a self-signed certificate is recommended. For production deployments, the process is made simpler by using Let's Encrypt to automatically generate a valid certificate.
 
-> Using [Let's Encrypt](https://letsencrypt.org/) is highly recommended. [See this section for more information](https://github.com/motki/motki-server#generating-a-cert-with-letsencrypt) on setting up Let's Encrypt.
+> Using [Let's Encrypt](https://letsencrypt.org/) is highly recommended. [See this section for more information](https://github.com/motki/motki-server#generating-a-cert-with-lets-encrypt) on setting up Let's Encrypt.
 
 #### Generating a cert with Let's Encrypt
 
