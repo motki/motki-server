@@ -4,10 +4,10 @@ import (
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/motki/core/eveapi"
+	"github.com/motki/core/evedb"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/route"
-	"github.com/motki/motki/eveapi"
-	"github.com/motki/motki/evedb"
 	"github.com/tyler-sommer/stick"
 )
 

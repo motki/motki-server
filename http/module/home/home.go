@@ -4,12 +4,12 @@ package home
 import (
 	"net/http"
 
+	"github.com/motki/core/log"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
 	"github.com/motki/motki-server/http/session"
 	"github.com/motki/motki-server/http/template"
 	"github.com/motki/motki-server/mail"
-	"github.com/motki/motki/log"
 )
 
 const (

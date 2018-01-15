@@ -5,9 +5,9 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/motki/core/log"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/session"
-	"github.com/motki/motki/log"
 )
 
 // A Request contains information about an incoming request.

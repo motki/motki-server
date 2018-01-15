@@ -9,14 +9,14 @@ import (
 
 	"strconv"
 
+	"github.com/motki/core/eveapi"
+	"github.com/motki/core/evedb"
+	"github.com/motki/core/log"
+	"github.com/motki/core/model"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
 	"github.com/motki/motki-server/http/template"
-	"github.com/motki/motki/eveapi"
-	"github.com/motki/motki/evedb"
-	"github.com/motki/motki/log"
-	"github.com/motki/motki/model"
 )
 
 // jobSlice defines how to sort jobs by end date ascending

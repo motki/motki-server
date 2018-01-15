@@ -5,15 +5,15 @@ import (
 	"encoding/base64"
 	"net/http"
 
+	"github.com/motki/core/log"
+	"github.com/motki/core/model"
+	"github.com/motki/core/worker"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
 	"github.com/motki/motki-server/http/session"
 	"github.com/motki/motki-server/http/template"
 	"github.com/motki/motki-server/mail"
-	"github.com/motki/motki/log"
-	"github.com/motki/motki/model"
-	"github.com/motki/motki/worker"
 )
 
 const (

@@ -3,7 +3,7 @@ package mail
 import (
 	"sync"
 
-	"github.com/motki/motki/model"
+	"github.com/motki/core/model"
 )
 
 type List interface {

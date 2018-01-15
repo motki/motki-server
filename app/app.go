@@ -20,6 +20,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/pkg/errors"
 
+	"github.com/motki/core/app"
 	"github.com/motki/motki-server/http"
 	"github.com/motki/motki-server/http/auth"
 	_ "github.com/motki/motki-server/http/middleware"
@@ -27,7 +28,6 @@ import (
 	"github.com/motki/motki-server/http/session"
 	"github.com/motki/motki-server/http/template"
 	"github.com/motki/motki-server/mail"
-	"github.com/motki/motki/app"
 
 	modaccount "github.com/motki/motki-server/http/module/account"
 	modassets "github.com/motki/motki-server/http/module/assets"

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/motki/core/log"
+	"github.com/motki/core/model"
 	"github.com/motki/motki-server/http/session"
-	"github.com/motki/motki/log"
-	"github.com/motki/motki/model"
 )
 
 const (

@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/motki/core/evedb"
+	"github.com/motki/core/log"
+	"github.com/motki/core/proto/client"
 	"github.com/motki/motki-server/http/auth"
 	"github.com/motki/motki-server/http/middleware"
 	"github.com/motki/motki-server/http/route"
 	"github.com/motki/motki-server/http/template"
-	"github.com/motki/motki/evedb"
-	"github.com/motki/motki/log"
-	"github.com/motki/motki/proto/client"
 )
 
 const (

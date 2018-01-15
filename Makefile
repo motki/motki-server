@@ -123,7 +123,7 @@ schema_targets := $(foreach sch,$(schemas),schema_$(sch))
 # These define where working EVE Static Dump data can be downloaded.
 motkid_src_base_url  := https://github.com/motki/motki-server/raw/master/
 download_targets     := resources/evesde-postgres.dmp.bz2 resources/Icons.zip resources/Types.zip
-motki_src_base_url   := https://github.com/motki/motki/raw/master/
+motki_src_base_url   := https://github.com/motki/core/raw/master/
 
 # Static asset targets. These must be zip files and follow a specific
 # convention. It may not be suitable for all assets.
@@ -216,7 +216,7 @@ $(download_targets):
 	cd resources && $(CURL) -L -O $(motkid_src_base_url)$@
 
 $(PREFIX)motki:
-	$(GIT) clone https://github.com/motki/motki $(PREFIX)motki
+	$(GIT) clone https://github.com/motki/core $(PREFIX)motki
 
 # Installs all asset targets, downloading them if necessary.
 assets: download $(asset_targets)

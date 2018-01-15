@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/motki/core/log"
 	"github.com/motki/motki-server/http/route"
-	"github.com/motki/motki/log"
 	"github.com/tyler-sommer/stick"
 )
 

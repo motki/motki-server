@@ -7,7 +7,7 @@ import (
 	"net/smtp"
 	"strings"
 
-	"github.com/motki/motki/log"
+	"github.com/motki/core/log"
 )
 
 var ErrRecipientUnsubscribed = errors.New("recipient has requested no email communication")

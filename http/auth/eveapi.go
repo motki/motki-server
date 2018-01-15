@@ -10,9 +10,9 @@ import (
 	"net/http"
 
 	"github.com/antihax/goesi"
-	"github.com/motki/motki/eveapi"
-	"github.com/motki/motki/log"
-	"github.com/motki/motki/model"
+	"github.com/motki/core/eveapi"
+	"github.com/motki/core/log"
+	"github.com/motki/core/model"
 	"golang.org/x/oauth2"
 )
 
