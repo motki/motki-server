@@ -27,7 +27,7 @@ func easyjson88693ff7DecodeGithubComAntihaxGoesiEsi(in *jlexer.Lexer, out *GetMa
 		in.Delim('[')
 		if *out == nil {
 			if !in.IsDelim(']') {
-				*out = make(GetMarketsPrices200OkList, 0, 5)
+				*out = make(GetMarketsPrices200OkList, 0, 2)
 			} else {
 				*out = GetMarketsPrices200OkList{}
 			}
@@ -106,9 +106,9 @@ func easyjson88693ff7DecodeGithubComAntihaxGoesiEsi1(in *jlexer.Lexer, out *GetM
 		case "type_id":
 			out.TypeId = int32(in.Int32())
 		case "average_price":
-			out.AveragePrice = float32(in.Float32())
+			out.AveragePrice = float64(in.Float64())
 		case "adjusted_price":
-			out.AdjustedPrice = float32(in.Float32())
+			out.AdjustedPrice = float64(in.Float64())
 		default:
 			in.SkipRecursive()
 		}
@@ -124,28 +124,34 @@ func easyjson88693ff7EncodeGithubComAntihaxGoesiEsi1(out *jwriter.Writer, in Get
 	first := true
 	_ = first
 	if in.TypeId != 0 {
-		if !first {
-			out.RawByte(',')
+		const prefix string = ",\"type_id\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
 		}
-		first = false
-		out.RawString("\"type_id\":")
 		out.Int32(int32(in.TypeId))
 	}
 	if in.AveragePrice != 0 {
-		if !first {
-			out.RawByte(',')
+		const prefix string = ",\"average_price\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
 		}
-		first = false
-		out.RawString("\"average_price\":")
-		out.Float32(float32(in.AveragePrice))
+		out.Float64(float64(in.AveragePrice))
 	}
 	if in.AdjustedPrice != 0 {
-		if !first {
-			out.RawByte(',')
+		const prefix string = ",\"adjusted_price\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
 		}
-		first = false
-		out.RawString("\"adjusted_price\":")
-		out.Float32(float32(in.AdjustedPrice))
+		out.Float64(float64(in.AdjustedPrice))
 	}
 	out.RawByte('}')
 }

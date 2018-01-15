@@ -19,14 +19,14 @@ This module offers:
 
 ## New Client
 ```
-  client, err := goesi.NewAPIClient(&http.Client, "MyApp (someone@somewhere.com dude on slack)")
+  client := goesi.NewAPIClient(&http.Client, "MyApp (someone@somewhere.com dude on slack)")
 ```
 One client should be created that will serve as an agent for all requests. This allows http2 multiplexing and keep-alive be used to optimize connections.
 It is also good manners to provide a user-agent describing the point of use of the API, allowing CCP to contact you in case of emergencies.
 
 Example
 ```
-  client, err := goesi.NewAPIClient(context.Background(), "my esi client http://mysite.com contact <SomeDude> ingame")
+  client := goesi.NewAPIClient(context.Background(), "my esi client http://mysite.com contact <SomeDude> ingame")
   result, response, err := client.V#.Endpoint.Operation(requestContext, requiredParam, map[string]interface{} { 
                                                                         "optionalParam1": "stringParam",
                                                                         "optionalParam2": 1234.56
@@ -34,7 +34,7 @@ Example
 ```
 
 ## Etiquette 
-* Create a discriptive user agent so CCP can contact you (preferably on devfleet slack).
+* Create a descriptive user agent so CCP can contact you (preferably on devfleet slack).
 * Obey Cache Timers.
 * Obey error rate limits: https://developers.eveonline.com/blog/article/error-limiting-imminent
 
@@ -79,7 +79,7 @@ pseudocode example:
   func main() {
     var err error
     ctx := appContext.AppContext{}
-    ctx.ESI, err = goesi.NewAPIClient(httpClient, "My App, contact someone@nowhere")
+    ctx.ESI = goesi.NewAPIClient(httpClient, "My App, contact someone@nowhere")
     ctx.SSOAuthenticator = goesi.NewSSOAuthenticator(httpClient, clientID, secretKey, scopes)
   }
 
