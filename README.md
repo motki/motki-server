@@ -1,12 +1,12 @@
 # motki-server
 
-The Moritake Industries application server.
+The MOTKI application server.
 
 [![GoDoc](https://godoc.org/github.com/motki/motki-server?status.svg)](https://godoc.org/github.com/motki/motki-server)
 
 ## Getting started
 
-This repository contains the web application source code, including dependency source code (stored in `vendor/`).
+This repository contains the `motkid` source code, including dependency source code (stored in `vendor/`).
 
 #### Pre-requisites for building
 
@@ -22,7 +22,7 @@ This repository contains the web application source code, including dependency s
 ##### Requirements for running
 
 * An available PostgreSQL database.
-* An SMTP provider.
+* A SMTP provider.
 * A machine to run motkid on.
 
 
@@ -50,7 +50,7 @@ Once you've copied `config.toml`, you can actually build the program. The simple
 
 |  Target       | Description 
 |-----------    |---------------------------------------------------
-| build         | Build `motkid` and `motki`.
+| build         | Build the `motkid` binary.
 | install       | Installs database schemas and EVE static dump data.
 | uninstall     | Drop created database schemas and EVE static dump data.
 | clean         | Delete all build files.
@@ -58,9 +58,11 @@ Once you've copied `config.toml`, you can actually build the program. The simple
 | matrix        | Build a matrix of arches and OSes, see below.
 | download      | Download EVE static dump data.
 | assets        | Installs EVE static dump data.
-| db            | Install the database schemas.
-| schema_evesde | Installs the EVE static dump schema.
-| schema_app    | Installs the app schema.
+| db            | Install the required schema definitions into the database.
+| schema_evesde | Installs the EVE static dump schema definitions.
+| schema_app    | Installs the app schema definitions.
+
+> Note that Makefile targets that deal with the database connect to the server defined in `config.toml`
 
 #### Notes
 
@@ -87,7 +89,7 @@ Below is an example of one way to get the code.
 
 ```bash
 mkdir -p $GOPATH/src/github.com/motki
-git clone git@github.com:motki/motkid $GOPATH/src/github.com/motki/motki-server
+git clone git@github.com:motki/motki-server $GOPATH/src/github.com/motki/motki-server
 cd $GOPATH/src/github.com/motki/motki-server
 ```
 
@@ -106,7 +108,7 @@ Load the data in the `resources` folder.
 
 Copy `config.toml.dist` to `config.toml` and edit appropriately.
 
-#### Configuring the EVE API
+### Configuring the EVE API
 
 To use the EVE API you need to set up an Application at the [EVE Developer Portal](https://developers.eveonline.com/applications).  You'll need to select appropriate roles (*all* of them is fine) and then set a correct Return URL for your setup.
 
@@ -115,10 +117,20 @@ To use the EVE API you need to set up an Application at the [EVE Developer Porta
 Once you have created your application on the developer portal, put the Client ID, Secret, and Return URL in the corresponding section in `config.toml`.
 
 
-#### Configuring SSL
+### Configuring SSL
 
 You need to generate a certificate and private key to properly set up SSL. During development, a self-signed certificate is recommended. For production deployments, the process is made simpler by using Let's Encrypt to automatically generate a valid certificate.
 
+> Using [Let's Encrypt](https://letsencrypt.org/) is highly recommended. [See this section for more information](https://github.com/motki/motki-server#generating-a-cert-with-letsencrypt) on setting up Let's Encrypt.
+
+#### Generating a cert with Let's Encrypt
+
+1. Configure the SSL section in `config.toml`
+    1. Set `autocert=true` in config.toml.
+    2. Set `certfile=""` and `keyfile=""` in config.toml
+    3. Set the SSL `listen` parameter to a valid public hostname.
+2. ...
+3. Profit
 
 ##### Generating a self-signed cert
 
@@ -129,26 +141,19 @@ You need to generate a certificate and private key to properly set up SSL. Durin
 4. There should now be a `key.pem` and `cert.pem` file in the current working directory. Update `config.toml` with the path to these.
 5. Start motkid
 
-> Don't commit the `generate_cert` utility or the generated keys to the source code repository.
-
-##### Generating a cert with letsencrypt
-
-1. Configure the SSL section in `config.toml`
-    1. Set `autocert=true` in config.toml.
-    2. Set `certfile=""` and `keyfile=""` in config.toml
-    3. Set the SSL `listen` parameter to a valid public hostname.
-2. ...
-3. Profit
+> Don't commit the `gencert` utility or the generated keys to the source code repository.
 
 
-### Running the app
+### Running `motkid`
 
-For now, it's easiest to start `motkid` using `go run`.
+Build the `motkid` command using make, then run the resulting executable.
 
-```bash
-cd $GOPATH/src/motki/motkid
-go run ./cmd/motkid/main.go
 ```
-
-
-
+$ make clean build
+$ build/motkid -h
+Usage of build/motkid:
+  -conf string
+    	Path to configuration file. (default "config.toml")
+  -version
+    	Display the application version.
+```
