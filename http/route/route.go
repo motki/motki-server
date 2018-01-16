@@ -57,17 +57,21 @@ type ServeMux struct {
 	*http.ServeMux
 
 	logger log.Logger
+
+	handlePanic Handler
 }
 
 // NewServeMux creates a new ServeMux, ready for use.
-//
-// Order of the middlewares is significant. First provided will execute first,
-// and so on.
 func NewServeMux(l log.Logger) *ServeMux {
 	return &ServeMux{
 		ServeMux: http.NewServeMux(),
 		logger:   l,
 	}
+}
+
+// HandlePanic sets a handler that responds after another handler panics.
+func (mux *ServeMux) HandlePanic(h Handler) {
+	mux.handlePanic = h
 }
 
 // Handle registers a handler for the given pattern.
@@ -76,6 +80,14 @@ func (mux *ServeMux) Handle(pattern string, h Handler) {
 		req := &Request{
 			Request: r,
 		}
+		defer func() {
+			if err := recover(); err != nil {
+				mux.logger.Warnf("recovering from panic in handler: %s", err)
+				if mux.handlePanic != nil {
+					mux.handlePanic.ServeHTTP(w, req)
+				}
+			}
+		}()
 		if err := h.ServeHTTP(w, req); err != nil {
 			mux.logger.Warnf("handler returned error: %s", err.Error())
 		}

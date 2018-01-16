@@ -43,6 +43,13 @@ func (m *homeModule) Init(mux *route.ServeMux) error {
 	mux.Handle("/recruitment", middleware.SessionizeFunc(m.sessions, m.recruitmentAction))
 	mux.Handle("/unsubscribe", middleware.SessionizeFunc(m.sessions, m.unsubscribeAction))
 	mux.Handle("/privacy", middleware.SessionizeFunc(m.sessions, m.privacyAction))
+	// TODO: Use a less resource intensive handler-- maybe just static HTML
+	mux.HandlePanic(route.HandlerFunc(m.panicAction))
+	return nil
+}
+
+func (m *homeModule) panicAction(w http.ResponseWriter, req *route.Request) error {
+	m.templates.Error(http.StatusInternalServerError, req, w)
 	return nil
 }
 
