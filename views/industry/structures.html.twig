@@ -15,8 +15,7 @@
         <tr>
             <th>System</th>
             <th>Type</th>
-            <th>Curr Vuln</th>
-            <th>Next Vuln</th>
+            <th>Name</th>
         </tr>
         </thead>
         <tbody>
@@ -24,8 +23,7 @@
         <tr>
             <td>{{ helper.GetSystem(s.SystemID) }}</td>
             <td>{{ helper.GetType(s.TypeID) }}</td>
-            <td>{{ s.CurrentVuln }}</td>
-            <td>{{ s.NextVuln }}</td>
+            <td>{{ s.Name }}</td>
         </tr>
         {% endfor %}
         </tbody>

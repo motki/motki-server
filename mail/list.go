@@ -48,9 +48,9 @@ func NewModelList(m *model.Manager, key string) (*modelList, error) {
 }
 
 func (m *modelList) Add(rec Recipient) error {
-	m.mutex.RLock()
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
 	_, ok := m.subscribers[rec.Email]
-	m.mutex.RUnlock()
 	if ok {
 		return nil
 	}
@@ -61,9 +61,7 @@ func (m *modelList) Add(rec Recipient) error {
 	if err != nil {
 		return err
 	}
-	m.mutex.Lock()
 	m.subscribers[rec.Email] = struct{}{}
-	m.mutex.Unlock()
 	return nil
 }
 

@@ -58,8 +58,8 @@
 [[projects]]
   branch = "master"
   name = "github.com/motki/core"
-  packages = ["app","db","eveapi","evedb","evemarketer","log","model","proto","proto/client","proto/server","worker"]
-  revision = "211a50bc8d5e7c05ad2fd574a48da981a2d88773"
+  packages = ["app","db","eveapi","evedb","evemarketer","log","model","model/internal/cache","proto","proto/client","proto/server","worker"]
+  revision = "6ad72639966c9a2efdfe168f6a92d1e8196925d9"
 
 [[projects]]
   name = "github.com/pkg/errors"
