@@ -2,3 +2,4 @@ config.toml
 public/images/Icons
 public/images/Renders
 public/images/Types
+dev/*
