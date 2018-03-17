@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/test/bufconn"
 
+	"github.com/motki/core/cache"
 	"github.com/motki/core/log"
 	"github.com/motki/core/proto"
 	"github.com/motki/core/proto/server"
@@ -32,21 +33,25 @@ type GRPCClient struct {
 	logger     log.Logger
 }
 
+// Cache time-to-live for static data.
+const cacheTTL = 600 * time.Second
+
 // newRemoteGRPC creates a new GRPC client intended for use with a remote GRPC server.
-func newRemoteGRPC(serverAddr string, l log.Logger, tlsConf *tls.Config) (*GRPCClient, error) {
-	return &GRPCClient{
-		serverAddr: serverAddr,
-		dialOpts:   []grpc.DialOption{grpc.WithTransportCredentials(credentials.NewTLS(tlsConf))},
-		logger:     l,
-	}, nil
+func newRemoteGRPC(serverAddr string, l log.Logger, tlsConf *tls.Config) (*cachingGRPCClient, error) {
+	return &cachingGRPCClient{
+		&GRPCClient{
+			serverAddr: serverAddr,
+			dialOpts:   []grpc.DialOption{grpc.WithTransportCredentials(credentials.NewTLS(tlsConf))},
+			logger:     l,
+		}, cache.New(cacheTTL)}, nil
 }
 
 // newLocalGRPC creates a new GRPC client for use with a process-local GRPC server.
 //
 // The bufconn.Listener passed in should be shared between both client and server. By default,
 // this is handled by the model.LocalConfig type.
-func newLocalGRPC(lis *bufconn.Listener, l log.Logger) (*GRPCClient, error) {
-	cl := &GRPCClient{logger: l}
+func newLocalGRPC(lis *bufconn.Listener, l log.Logger) (*cachingGRPCClient, error) {
+	cl := &cachingGRPCClient{&GRPCClient{logger: l}, cache.New(cacheTTL)}
 	cl.dialOpts = append(cl.dialOpts, grpc.WithDialer(func(string, time.Duration) (net.Conn, error) {
 		return lis.Dial()
 	}), grpc.WithInsecure())
@@ -82,4 +87,9 @@ func (c *GRPCClient) Authenticate(username, password string) error {
 	}
 	c.token = res.Token.Identifier
 	return nil
+}
+
+// Authenticated returns true if the current session is authenticated.
+func (c *GRPCClient) Authenticated() bool {
+	return c.token != ""
 }
