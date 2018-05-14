@@ -5,11 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"sort"
+	"strconv"
 	"time"
 
-	"strconv"
-
-	"github.com/motki/core/eveapi"
 	"github.com/motki/core/evedb"
 	"github.com/motki/core/log"
 	"github.com/motki/core/model"
@@ -20,7 +18,7 @@ import (
 )
 
 // jobSlice defines how to sort jobs by end date ascending
-type jobSlice []*eveapi.IndustryJob
+type jobSlice []*model.IndustryJob
 
 func (s jobSlice) Len() int {
 	return len(s)

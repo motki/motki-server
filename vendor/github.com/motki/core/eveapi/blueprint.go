@@ -1,6 +1,10 @@
 package eveapi
 
 import (
+	"strconv"
+
+	"github.com/antihax/goesi/esi"
+	"github.com/antihax/goesi/optional"
 	"golang.org/x/net/context"
 )
 
@@ -8,8 +12,7 @@ type Blueprint struct {
 	ItemID             int64
 	LocationID         int64
 	TypeID             int64
-	TypeName           string
-	FlagID             int64
+	LocationFlag       string
 	TimeEfficiency     int64
 	MaterialEfficiency int64
 
@@ -21,27 +24,35 @@ type Blueprint struct {
 }
 
 func (api *EveAPI) GetCorporationBlueprints(ctx context.Context, corpID int) ([]*Blueprint, error) {
-	tok, err := TokenFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	res, err := api.client.EVEAPI.CorporationBlueprintsXML(tok, int64(corpID))
+	_, err := TokenFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	var bps []*Blueprint
-	for _, bp := range res.Entries {
-		bps = append(bps, &Blueprint{
-			ItemID:             bp.ItemID,
-			LocationID:         bp.LocationID,
-			TypeID:             bp.TypeID,
-			TypeName:           bp.TypeName,
-			Quantity:           bp.Quantity,
-			FlagID:             bp.FlagID,
-			TimeEfficiency:     bp.TimeEfficiency,
-			MaterialEfficiency: bp.MaterialEfficiency,
-			Runs:               bp.Runs,
-		})
+	for p, max := 1, 1; p <= max; p++ {
+		res, resp, err := api.client.ESI.CorporationApi.GetCorporationsCorporationIdBlueprints(
+			ctx,
+			int32(corpID),
+			&esi.GetCorporationsCorporationIdBlueprintsOpts{Page: optional.NewInt32(int32(p))})
+		if err != nil {
+			return nil, err
+		}
+		max, err = strconv.Atoi(resp.Header.Get("X-Pages"))
+		if err != nil {
+			api.logger.Debugf("error reading X-Pages header: ", err.Error())
+		}
+		for _, bp := range res {
+			bps = append(bps, &Blueprint{
+				ItemID:             bp.ItemId,
+				LocationID:         bp.LocationId,
+				LocationFlag:       bp.LocationFlag,
+				TypeID:             int64(bp.TypeId),
+				Quantity:           int64(bp.Quantity),
+				TimeEfficiency:     int64(bp.TimeEfficiency),
+				MaterialEfficiency: int64(bp.MaterialEfficiency),
+				Runs:               int64(bp.Runs),
+			})
+		}
 	}
 	return bps, nil
 }

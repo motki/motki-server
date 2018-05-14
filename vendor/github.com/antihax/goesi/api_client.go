@@ -28,7 +28,6 @@ import (
 	"time"
 
 	"github.com/antihax/goesi/esi"
-	"github.com/antihax/goesi/eveapi"
 )
 
 // Handle our context keys.
@@ -40,15 +39,14 @@ func (c contextKey) String() string {
 
 // ContextOAuth2 is the context for GoESI authentication. Pass a tokenSource with this key to a context for an ESI API Call
 var (
-	ContextOAuth2    = esi.ContextOAuth2
-	ContextBasicAuth = esi.ContextBasicAuth
+	ContextOAuth2      = esi.ContextOAuth2
+	ContextAccessToken = esi.ContextAccessToken
 )
 
 // APIClient manages communication with the EVE Swagger Interface API
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
-	ESI    *esi.APIClient
-	EVEAPI *eveapi.EVEAPIClient
+	ESI *esi.APIClient
 }
 
 // NewAPIClient creates a new API client. Requires a userAgent string describing your application.
@@ -61,7 +59,6 @@ func NewAPIClient(httpClient *http.Client, userAgent string) *APIClient {
 	c := &APIClient{}
 
 	c.ESI = esi.NewAPIClient(httpClient, userAgent)
-	c.EVEAPI = eveapi.NewEVEAPIClient(httpClient, userAgent)
 
 	return c
 }

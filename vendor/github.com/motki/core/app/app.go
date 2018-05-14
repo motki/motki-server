@@ -31,6 +31,7 @@ import (
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/test/bufconn"
 
+	_ "github.com/motki/core/cache"
 	"github.com/motki/core/db"
 	"github.com/motki/core/eveapi"
 	"github.com/motki/core/evedb"
@@ -123,7 +124,7 @@ type ShutdownFunc func()
 // Each pre-exit task exists in the form of a ShutdownFunc. Each ShutdownFunc
 // is run concurrently and there is a finite amount of time for them to return
 // before the application exits anyway.
-func (env *ClientEnv) BlockUntilSignalWith(signals chan os.Signal, fns ...ShutdownFunc) {
+func (env *ClientEnv) BlockUntilSignalWith(signals chan os.Signal, fns ...ShutdownFunc) error {
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 	s := <-signals
 	env.Logger.Warnf("app: signal %+v received, shutting down...", s)
@@ -143,13 +144,12 @@ func (env *ClientEnv) BlockUntilSignalWith(signals chan os.Signal, fns ...Shutdo
 	t := time.NewTimer(5 * time.Second)
 	select {
 	case <-t.C:
-		env.Logger.Warnf("app: timeout waiting for services to shutdown")
-		os.Exit(1)
+		return errors.New("timeout waiting for services to shutdown")
 
 	case <-ct:
-		env.Logger.Debugf("app: graceful shutdown complete; exiting")
-		os.Exit(0)
+		env.Logger.Debugf("app: graceful shutdown complete")
 	}
+	return nil
 }
 
 // BlockUntilSignal will block until it receives a signal.
@@ -158,9 +158,9 @@ func (env *ClientEnv) BlockUntilSignalWith(signals chan os.Signal, fns ...Shutdo
 // a signal.
 //
 // See BlockUntilSignalWith for more details.
-func (env *ClientEnv) BlockUntilSignal(abort chan os.Signal) {
+func (env *ClientEnv) BlockUntilSignal(abort chan os.Signal) error {
 	env.signals = abort
-	env.BlockUntilSignalWith(abort, env.shutdownFuncs()...)
+	return env.BlockUntilSignalWith(abort, env.shutdownFuncs()...)
 }
 
 // Shutdown begins a graceful shutdown process.
@@ -260,9 +260,9 @@ func NewEnv(conf *Config) (*Env, error) {
 // a signal.
 //
 // See BlockUntilSignalWith for more details.
-func (env *Env) BlockUntilSignal(signals chan os.Signal) {
+func (env *Env) BlockUntilSignal(signals chan os.Signal) error {
 	env.signals = signals
-	env.BlockUntilSignalWith(signals, append([]ShutdownFunc{
+	return env.BlockUntilSignalWith(signals, append([]ShutdownFunc{
 		func() {
 			if env.Server == nil {
 				return
