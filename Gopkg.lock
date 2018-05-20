@@ -15,7 +15,7 @@
     "esi",
     "optional"
   ]
-  revision = "b452d0701e85f44630f232c8815a62f1733bc983"
+  revision = "a0abd622febcc84eb50e6089aa77b8b3d49da084"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -88,7 +88,7 @@
     "proto/server",
     "worker"
   ]
-  revision = "6140e598eb0c94e3b63dcdc7b5b1cfeb162e803d"
+  revision = "0a6e8c4de73d0903cd58e486be78168b0a3139c7"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -128,7 +128,7 @@
     "blowfish",
     "ssh/terminal"
   ]
-  revision = "034e5325b6ab92faa14d15c30e86919e911cf8e0"
+  revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
 
 [[projects]]
   branch = "master"
@@ -143,7 +143,7 @@
     "internal/timeseries",
     "trace"
   ]
-  revision = "2491c5de3490fced2f6cff376127c667efeed857"
+  revision = "57065200b4b034a1c8ad54ff77069408c2218ae6"
 
 [[projects]]
   branch = "master"
@@ -161,7 +161,7 @@
     "unix",
     "windows"
   ]
-  revision = "d0faeb539838e250bd0a9db4182d48d4a1915181"
+  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -202,7 +202,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "86e600f69ee4704c6efbf6a2a40a5c10700e76c2"
+  revision = "11a468237815f3a3ddf9f7c6e8b6b3b382a24d15"
 
 [[projects]]
   name = "google.golang.org/grpc"
