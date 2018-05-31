@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -eo pipefail
-set -x
 
 targets="motki_ddl_zip types_zip icons_zip evesde_bz2"
 
@@ -9,15 +8,7 @@ types_zip_name="Types.zip"
 icons_zip_name="Icons.zip"
 evesde_bz2_name="evesde-postgres.dmp.bz2"
 
-build_dir="$PWD/build"
-
-if [ ! -d ${build_dir} ]; then
-    # This script isn't really intended to be used outside of being called from the Makefile.
-    echo "Prerequisite not met: ${build_dir} should already exist."
-    exit 1
-fi
-
-build_dir="$build_dir/assets"
+build_dir="$PWD/build/assets"
 
 mkdir -p ${build_dir}
 
