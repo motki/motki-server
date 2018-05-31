@@ -117,13 +117,13 @@ release_targets := $(foreach bin,$(binaries),$(call release_name,$(bin)))
 
 # These define the schema names.
 # Note that targets for schemas are manually defined.
-schemas        := evesde app
-schema_targets := $(foreach sch,$(schemas),schema_$(sch))
+schemas             := evesde app
+schema_targets      := $(foreach sch,$(schemas),schema_$(sch))
+drop_schema_targets := $(foreach sch,$(schemas),drop_schema_$(sch))
 
-# These define where working EVE Static Dump data can be downloaded.
-motkid_src_base_url  := https://github.com/motki/motki-server/raw/master/
-download_targets     := resources/evesde-postgres.dmp.bz2 resources/Icons.zip resources/Types.zip
-motki_src_base_url   := https://github.com/motki/core/raw/master/
+# These define files that need to be downloaded.
+# Downloading is handled by resources/static_assets.sh.
+download_targets     := $(PREFIX)assets/evesde-postgres.dmp.bz2 $(PREFIX)assets/Icons.zip $(PREFIX)assets/Types.zip $(PREFIX)assets/motki-schema.zip
 
 # Static asset targets. These must be zip files and follow a specific
 # convention. It may not be suitable for all assets.
@@ -140,15 +140,15 @@ define print_conf
 endef
 
 # All of the files this generates.
-files := $(PREFIX)motki_*_* $(PREFIX)motkid_*_* $(binary_targets) $(PREFIX)go_generated $(PREFIX)motki
+files := $(PREFIX)motki_*_* $(PREFIX)motkid_*_* $(binary_targets) $(PREFIX)go_generated $(PREFIX)assets
 
 .PHONY: all
 .PHONY: generate build release matrix
 .PHONY: install uninstall
 .PHONY: download assets
 .PHONY: db $(schema_targets)
-.PHONY: clean clean_files
-.PHONY: drop_schemas delete_assets
+.PHONY: clean clean_files delete_assets
+.PHONY: drop_schemas $(drop_schema_targets)
 .PHONY: debug
 
 
@@ -197,35 +197,34 @@ db: $(schema_targets)
 # Note that the pg_restore command will always exit with a zero.
 # This is because the dump currently causes warnings to be emitted
 # and pg_restore exits with an error exit code.
-schema_evesde:
+schema_evesde: $(PREFIX)assets/evesde-postgres.dmp.bz2
 ifneq ($(shell $(call schema_exists,evesde)),1)
-	($(BUNZIP2) -ck ./resources/evesde-postgres.dmp.bz2 | $(PG_RESTORE) $(pg_args) --clean; exit 0)
+	($(BUNZIP2) -ck $(PREFIX)assets/evesde-postgres.dmp.bz2 | $(PG_RESTORE) $(pg_args) --clean; exit 0)
 endif
 
 # Installs the app schema if it does not already exist.
-schema_app: $(PREFIX)motki
+schema_app: $(PREFIX)assets/motki-schema.zip
 ifneq ($(shell $(call schema_exists,app)),1)
-	$(CAT) $(wildcard ./build/motki/resources/ddl/*.sql) | $(PSQL) $(pg_args)
+	mkdir $(PREFIX)ddl || rm -rf $(PREFIX)ddl/*
+	$(UNZIP) $(PREFIX)assets/motki-schema.zip -d $(PREFIX)ddl
+	$(CAT) $(wildcard $(PREFIX)ddl/*.sql) | $(PSQL) $(pg_args)
 endif
 
 # Downloads all necessary EVE Static Dump files.
-download: $(download_targets) $(PREFIX)motki
+download: $(download_targets)
 
 # This defines a target that matches any static files that need to be downloaded.
 $(download_targets):
-	cd resources && $(CURL) -L -O $(motkid_src_base_url)$@
-
-$(PREFIX)motki:
-	$(GIT) clone https://github.com/motki/core $(PREFIX)motki
+	./resources/static_assets.sh
 
 # Installs all asset targets, downloading them if necessary.
-assets: download $(asset_targets)
+assets: $(asset_targets)
 
 # This defines a target for each asset defined in asset_targets.
 # Note that it currently only supports the current structure with little
 # flexibility.
-$(asset_targets):
-	$(UNZIP) ./resources/$(lastword $(subst /, ,$@)).zip -d $(asset_images_dir)
+$(asset_targets): download
+	$(UNZIP) $(PREFIX)assets/$(lastword $(subst /, ,$@)).zip -d $(asset_images_dir)
 
 # Deletes build files.
 clean: clean_files
@@ -244,9 +243,14 @@ delete_assets:
 	@echo "Deleted static assets."
 
 # Deletes all database schemas.
-drop_schemas:
-	@$(foreach sch,$(schemas),$(if $(shell $(call schema_exists,$(sch))),$(call drop_schema,$(sch)) && echo "Dropped schema $(DB_NAME).$(sch)";,))
+drop_schemas: $(drop_schema_targets)
 
+# Drop the named schema, if it exists.
+$(drop_schema_targets):
+ifneq ($(shell $(call schema_exists,$(lastword $(subst _, ,$@)))),1)
+	$(call drop_schema,$(lastword $(subst _, ,$@)))
+	echo "Dropped schema $(DB_NAME).$(lastword $(subst _, ,$@))"
+endif
 
 # Prints configuration information.
 debug:
