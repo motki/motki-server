@@ -9,6 +9,8 @@ import (
 
 // A memoryManager handles persisting sessions to program memory.
 type memoryManager struct {
+	regenerator
+
 	mut      sync.RWMutex
 	sessions map[string]*Session
 
@@ -16,7 +18,12 @@ type memoryManager struct {
 }
 
 func newMemoryManager(ckr *cookier) *memoryManager {
-	return &memoryManager{sync.RWMutex{}, make(map[string]*Session), ckr}
+	m := &memoryManager{
+		sessions: make(map[string]*Session),
+		cookie:   ckr,
+	}
+	m.regenerator.m = m
+	return m
 }
 
 func (m *memoryManager) Get(r *http.Request, w http.ResponseWriter) (*Session, error) {
@@ -59,5 +66,12 @@ func (m *memoryManager) save(s *Session) error {
 	m.mut.Lock()
 	defer m.mut.Unlock()
 	m.sessions[s.id] = s
+	return nil
+}
+
+func (m *memoryManager) destroy(s *Session) error {
+	m.mut.Lock()
+	defer m.mut.Unlock()
+	delete(m.sessions, s.id)
 	return nil
 }

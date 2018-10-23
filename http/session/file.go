@@ -12,13 +12,19 @@ import (
 
 // A fileManager handles persisting session to the filesystem.
 type fileManager struct {
+	regenerator
 	storagePath string
 
 	cookie *cookier
 }
 
 func newFileManager(storagePath string, ckr *cookier) *fileManager {
-	return &fileManager{storagePath, ckr}
+	m := &fileManager{
+		storagePath: storagePath,
+		cookie:      ckr,
+	}
+	m.regenerator.m = m
+	return m
 }
 
 func (m *fileManager) Get(r *http.Request, w http.ResponseWriter) (*Session, error) {
@@ -70,4 +76,9 @@ func (m *fileManager) save(s *Session) error {
 		return errors.Wrap(err, "unable to marshal session data to json")
 	}
 	return errors.Wrap(ioutil.WriteFile(p, b, 0600), "unable to save session to filesystem")
+}
+
+func (m *fileManager) destroy(s *Session) error {
+	p := filepath.Join(m.storagePath, s.id)
+	return os.Remove(p)
 }

@@ -15,7 +15,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const cookieName = "__motkid"
+const cookieName = "__motkid-sessid"
 
 // Config is the configuration for a session manager.
 type Config struct {
@@ -39,21 +39,46 @@ type Manager interface {
 	// Invalidate destroys any session related to the given request, if any.
 	Invalidate(*http.Request, http.ResponseWriter)
 
+	// regenerate the given session, returning a new session or error.
+	regenerate(*Session) error
+
+	destroy(*Session) error
+
 	// save saves the session to the underlying persistent storage.
 	save(*Session) error
+}
+
+type regenerator struct {
+	m Manager
+}
+
+func (r regenerator) regenerate(s *Session) error {
+	ns, err := newSession(r.m)
+	if err != nil {
+		return err
+	}
+	for k, v := range s.vals {
+		ns.vals[k] = v
+	}
+	if err = r.m.destroy(s); err != nil {
+		return err
+	}
+	*s = *ns
+	return nil
 }
 
 // A cookier is responsible for setting, getting, and removing session ID cookies.
 type cookier struct {
 	secureOnly bool
 	secret     []byte
+	cookieName string
 }
 
 // Set writes a Set-Cookie header for the given session ID.
 func (c *cookier) Set(sessID string, w http.ResponseWriter) {
 	sig := c.sign(sessID)
 	http.SetCookie(w, &http.Cookie{
-		Name:    cookieName,
+		Name:    c.cookieName,
 		Value:   sessID + ":" + sig,
 		Path:    "/",
 		Expires: time.Now().Add(time.Hour * 24),
@@ -63,7 +88,7 @@ func (c *cookier) Set(sessID string, w http.ResponseWriter) {
 
 // Get attempts to get the session ID stored in the cookies in the given request.
 func (c *cookier) Get(r *http.Request) (string, bool) {
-	cook, err := r.Cookie(cookieName)
+	cook, err := r.Cookie(c.cookieName)
 	if err != nil {
 		return "", false
 	}
@@ -80,7 +105,7 @@ func (c *cookier) Get(r *http.Request) (string, bool) {
 // Remove writes a Set-Cookie header to remove any session cookie.
 func (c *cookier) Remove(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
-		Name:   cookieName,
+		Name:   c.cookieName,
 		Value:  "",
 		MaxAge: -1,
 		Path:   "/",
@@ -112,10 +137,12 @@ func NewManager(c Config, l log.Logger) Manager {
 		l.Fatalf("session: secret cannot be empty")
 	}
 	var ret Manager
-	cookie := &cookier{c.HTTPSOnly, []byte(c.Secret)}
+	n := cookieName
 	if c.HTTPSOnly {
 		l.Debugf("session: secure only session cookies enabled; only https clients will have sessions")
+		n = string(append([]byte("__Host-"), n...))
 	}
+	cookie := &cookier{secureOnly: c.HTTPSOnly, secret: []byte(c.Secret), cookieName: n}
 	if c.Type == "file" {
 		l.Debugf("session: using file-based sessions")
 		l.Debugf("session: storage path: %s", c.StoragePath)
@@ -142,6 +169,11 @@ type Session struct {
 // Flush saves the session to persistent storage.
 func (s *Session) Flush() error {
 	return s.m.save(s)
+}
+
+// regenerate creates a new session, destroying the existing session.
+func (s *Session) Regenerate() error {
+	return s.m.regenerate(s)
 }
 
 // SetFlash adds a message to the session with the given key.
