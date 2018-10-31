@@ -24,6 +24,7 @@ func newFileManager(storagePath string, ckr *cookier) *fileManager {
 		cookie:      ckr,
 	}
 	m.regenerator.m = m
+	m.regenerator.cookie = ckr
 	return m
 }
 

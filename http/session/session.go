@@ -39,8 +39,8 @@ type Manager interface {
 	// Invalidate destroys any session related to the given request, if any.
 	Invalidate(*http.Request, http.ResponseWriter)
 
-	// regenerate the given session, returning a new session or error.
-	regenerate(*Session) error
+	// Regenerate the given session, returning a new session or error.
+	Regenerate(*Session, http.ResponseWriter) error
 
 	destroy(*Session) error
 
@@ -49,10 +49,11 @@ type Manager interface {
 }
 
 type regenerator struct {
-	m Manager
+	m      Manager
+	cookie *cookier
 }
 
-func (r regenerator) regenerate(s *Session) error {
+func (r regenerator) Regenerate(s *Session, w http.ResponseWriter) error {
 	ns, err := newSession(r.m)
 	if err != nil {
 		return err
@@ -64,6 +65,7 @@ func (r regenerator) regenerate(s *Session) error {
 		return err
 	}
 	*s = *ns
+	r.cookie.Set(s.id, w)
 	return nil
 }
 
@@ -109,6 +111,7 @@ func (c *cookier) Remove(w http.ResponseWriter) {
 		Value:  "",
 		MaxAge: -1,
 		Path:   "/",
+		Secure: c.secureOnly,
 	})
 }
 
@@ -169,11 +172,6 @@ type Session struct {
 // Flush saves the session to persistent storage.
 func (s *Session) Flush() error {
 	return s.m.save(s)
-}
-
-// regenerate creates a new session, destroying the existing session.
-func (s *Session) Regenerate() error {
-	return s.m.regenerate(s)
 }
 
 // SetFlash adds a message to the session with the given key.

@@ -23,6 +23,7 @@ func newMemoryManager(ckr *cookier) *memoryManager {
 		cookie:   ckr,
 	}
 	m.regenerator.m = m
+	m.regenerator.cookie = ckr
 	return m
 }
 
